@@ -1789,3 +1789,399 @@ html[lang="en"] .brand-cn { display: none; }
 html[lang="en"] .brand-en { font-size: 16px; font-weight: 600; color: var(--color-text); }
 
 html[lang="zh-CN"] .brand-en { font-size: 11.5px; }
+
+/* ==========================================================================
+   COSMIC 3D BACKGROUND THEME (v3.0 — ported from liberhome.top)
+   - Three.js cosmic scene fills the viewport behind all content
+   - All cards become semi-transparent glass with backdrop-filter blur
+   - Seal red (#b9302a) preserved as the only warm accent against deep blue
+   - 快哉 brush ink logo gains soft glow to read against starfield
+   ========================================================================== */
+
+:root {
+    --cosmic-bg: #050316;
+    --cosmic-bg-2: #0c0824;
+    --cosmic-fg: #f5f3ff;
+    --cosmic-fg-2: #c8c4e0;
+    --cosmic-fg-3: #8a86ad;
+    --cosmic-border: rgba(255, 255, 255, 0.12);
+    --cosmic-border-2: rgba(255, 255, 255, 0.20);
+    --cosmic-card-bg: rgba(12, 8, 36, 0.55);
+    --cosmic-card-bg-hover: rgba(20, 12, 50, 0.65);
+    --cosmic-glass: blur(20px) saturate(160%);
+}
+
+html, body {
+    background: var(--cosmic-bg);
+    color: var(--cosmic-fg);
+}
+
+body {
+    /* Subtle film grain overlay so the page never looks "flat" over the canvas */
+    position: relative;
+    min-height: 100vh;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Full-screen 3D canvas (true page background) */
+#scene-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+}
+
+/* Vignette + atmospheric overlay over 3D — keeps content edges readable */
+.cosmic-atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+        radial-gradient(ellipse 100% 80% at 50% 50%, transparent 30%, rgba(5,3,22,0.45) 80%, rgba(5,3,22,0.85) 100%),
+        radial-gradient(900px 700px at 15% 10%, rgba(167,139,250,0.06), transparent 60%),
+        radial-gradient(800px 600px at 85% 90%, rgba(185, 48, 42, 0.07), transparent 60%);
+}
+
+/* All page content lifts above the canvas + atmosphere */
+.site-header,
+main,
+.site-footer,
+.scroll-rail {
+    position: relative;
+    z-index: 3;
+}
+
+/* Fallback when WebGL fails */
+body.no-3d {
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10), transparent 70%),
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(185,48,42,0.08), transparent 70%),
+        var(--cosmic-bg);
+}
+body.no-3d #scene-canvas { display: none; }
+
+/* ----- Header: dark glass ----- */
+.site-header {
+    background: rgba(5, 3, 22, 0.55);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--cosmic-border);
+}
+.site-header.is-scrolled {
+    background: rgba(5, 3, 22, 0.78);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 8px 24px -8px rgba(0,0,0,0.4);
+}
+.brand-cn { color: #ffffff; }
+.brand-en { color: var(--cosmic-fg-3); }
+.site-nav a { color: var(--cosmic-fg-2); }
+.site-nav a:hover { color: #ffffff; }
+.lang-toggle {
+    color: var(--cosmic-fg-2);
+    border-color: var(--cosmic-border-2);
+    background: rgba(255,255,255,0.04);
+}
+.lang-toggle:hover {
+    background: var(--color-seal-soft-2);
+    color: #fff;
+    border-color: var(--color-seal);
+}
+html[lang="en"] .brand-en { color: #ffffff; }
+
+/* ----- Scroll rail (right) ----- */
+.scroll-rail .pip { color: var(--cosmic-fg-3); }
+.scroll-rail .pip:hover { color: var(--color-seal); }
+.scroll-rail .pip.is-active { color: #ffffff; }
+.scroll-rail .pip .dot {
+    border-color: var(--cosmic-fg-3);
+    background: transparent;
+}
+.scroll-rail .pip:hover .dot { border-color: var(--color-seal); }
+.scroll-rail .pip.is-active .dot {
+    background: var(--color-seal);
+    border-color: var(--color-seal);
+    box-shadow: 0 0 12px rgba(185,48,42,0.7);
+}
+
+/* ----- HERO: kill paper-color background, let cosmic show through ----- */
+.hero {
+    background: transparent;
+    border-bottom: none;
+    padding: 120px 0 140px;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+}
+.hero-bg, .hero-grid { display: none; }
+
+.hero-eyebrow {
+    color: #ffd5d2;
+    background: rgba(185, 48, 42, 0.18);
+    border-color: rgba(185, 48, 42, 0.45);
+    backdrop-filter: blur(8px);
+}
+
+.hero-title {
+    color: #ffffff;
+    text-shadow: 0 2px 20px rgba(5, 3, 22, 0.6);
+}
+.hero-title .accent {
+    background: linear-gradient(135deg, #ff8a82 0%, var(--color-seal) 50%, #c8aaff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 24px rgba(185, 48, 42, 0.45));
+}
+
+.hero-subtitle {
+    color: var(--cosmic-fg-2);
+    text-shadow: 0 1px 12px rgba(5, 3, 22, 0.5);
+}
+
+.hero-pills { color: var(--cosmic-fg-3); }
+.hero-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--cosmic-border-2);
+    color: var(--cosmic-fg-2);
+    backdrop-filter: blur(8px);
+}
+.hero-pill:hover {
+    border-color: var(--color-seal);
+    color: #ffd5d2;
+    background: rgba(185, 48, 42, 0.15);
+}
+.hero-pill-arrow { color: var(--color-seal); }
+
+.hero-meta { color: var(--cosmic-fg-3); }
+.hero-meta-icon { color: var(--cosmic-fg-3); }
+.hero-meta-sep { color: var(--cosmic-border-2); }
+
+/* Hero logo: brush ink stays prominent, ringed in glow */
+.hero-logo-frame {
+    background: rgba(250, 246, 237, 0.04);
+    box-shadow:
+        0 30px 80px -20px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.10),
+        0 0 60px -10px rgba(185, 48, 42, 0.45),
+        0 0 120px -20px rgba(167, 139, 250, 0.30);
+}
+.hero-logo-img {
+    /* Brush is dark on paper — invert + recolor so it pops on dark cosmic bg */
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+}
+.hero-glow {
+    background: radial-gradient(circle, rgba(185, 48, 42, 0.35), transparent 65%);
+    filter: blur(50px);
+}
+.hero-art-stamp {
+    box-shadow:
+        0 8px 24px rgba(185, 48, 42, 0.5),
+        0 0 0 2px rgba(255, 213, 210, 0.2);
+}
+
+/* ----- Section shells: transparent so cosmic shows through ----- */
+.section-about,
+.section-services,
+.section-contact {
+    background: transparent;
+    border-bottom: none;
+}
+.section-services::before { display: none; } /* dot pattern off — cosmic IS the texture */
+
+.section-title {
+    color: #ffffff;
+    text-shadow: 0 2px 16px rgba(5, 3, 22, 0.5);
+}
+.section-kicker {
+    color: var(--color-seal);
+}
+.section-kicker .num { color: var(--cosmic-fg-3); }
+.section-lead { color: var(--cosmic-fg-2); }
+
+/* ----- About cards: glass ----- */
+.about-text p { color: var(--cosmic-fg-2); }
+.about-text strong { color: #ffffff; }
+.about-text::before {
+    background: linear-gradient(180deg, var(--color-seal), rgba(167, 139, 250, 0.3));
+}
+
+.about-facts {
+    background: var(--cosmic-card-bg);
+    border-color: var(--cosmic-border);
+    backdrop-filter: var(--cosmic-glass);
+    -webkit-backdrop-filter: var(--cosmic-glass);
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
+}
+.about-facts dt { color: var(--cosmic-fg-3); }
+.about-facts dd { color: #ffffff; }
+.about-facts-tag {
+    background: rgba(185, 48, 42, 0.18);
+    color: #ffd5d2;
+}
+
+/* Timeline */
+.timeline-head { color: var(--cosmic-fg-3); }
+.timeline-dot {
+    background: var(--cosmic-bg);
+    border-color: var(--color-seal);
+    box-shadow: 0 0 0 6px rgba(5, 3, 22, 0.6), 0 0 0 7px var(--cosmic-border);
+}
+.timeline li.is-current .timeline-dot {
+    background: var(--color-seal);
+    box-shadow: 0 0 0 6px rgba(5, 3, 22, 0.6), 0 0 0 7px rgba(185,48,42,0.3),
+                0 0 18px rgba(185,48,42,0.6);
+}
+.timeline-when { color: #ffd5d2; }
+.timeline-role { color: #ffffff; }
+.timeline-desc { color: var(--cosmic-fg-3); }
+
+/* Stats band: glass */
+.stats-band {
+    background: var(--cosmic-card-bg);
+    border-color: var(--cosmic-border);
+    backdrop-filter: var(--cosmic-glass);
+    -webkit-backdrop-filter: var(--cosmic-glass);
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
+}
+.stat-num {
+    background: linear-gradient(135deg, #ffffff 0%, #ffd5d2 110%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.stat-label { color: var(--cosmic-fg-3); }
+.stat-divider {
+    background: linear-gradient(180deg, transparent, var(--cosmic-border-2), transparent);
+}
+
+/* ----- Service cards: glass ----- */
+.service-card {
+    background: var(--cosmic-card-bg);
+    border-color: var(--cosmic-border);
+    backdrop-filter: var(--cosmic-glass);
+    -webkit-backdrop-filter: var(--cosmic-glass);
+    box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
+}
+.service-card:hover {
+    background: var(--cosmic-card-bg-hover);
+    border-color: rgba(185, 48, 42, 0.3);
+    box-shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.7),
+                0 0 24px -8px rgba(185, 48, 42, 0.3);
+}
+.service-card h3 { color: #ffffff; }
+.service-card p:not(.service-en) { color: var(--cosmic-fg-2); }
+.service-en { color: var(--cosmic-fg-3); }
+.service-icon {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--cosmic-border-2);
+    color: #ffffff;
+}
+.service-card:hover .service-icon {
+    color: #ffd5d2;
+    background: rgba(185, 48, 42, 0.18);
+    border-color: rgba(185, 48, 42, 0.4);
+}
+.service-num { color: rgba(255, 255, 255, 0.10); }
+.service-card:hover .service-num { color: rgba(255, 213, 210, 0.85); opacity: 1; }
+
+/* ----- Value section: stays "dark" but lighter than cosmic so it reads as a band ----- */
+.section-value {
+    background:
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(185, 48, 42, 0.18), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 15% 80%, rgba(167, 139, 250, 0.18), transparent 60%),
+        rgba(12, 8, 36, 0.55);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-top: 1px solid var(--cosmic-border);
+    border-bottom: 1px solid var(--cosmic-border);
+}
+
+/* ----- Contact ----- */
+.contact-email-card {
+    background: var(--cosmic-card-bg);
+    border-color: var(--cosmic-border);
+    backdrop-filter: var(--cosmic-glass);
+    -webkit-backdrop-filter: var(--cosmic-glass);
+    box-shadow: 0 16px 48px -16px rgba(0, 0, 0, 0.6);
+}
+.contact-email-icon {
+    background: rgba(185, 48, 42, 0.20);
+    border-color: rgba(185, 48, 42, 0.4);
+    color: #ffd5d2;
+}
+.contact-email-label { color: var(--cosmic-fg-3); }
+.contact-email-link { color: #ffffff; }
+.contact-email-link:hover { color: #ffd5d2; }
+
+.contact-block {
+    background: var(--cosmic-card-bg);
+    border-color: var(--cosmic-border);
+    backdrop-filter: var(--cosmic-glass);
+    -webkit-backdrop-filter: var(--cosmic-glass);
+}
+.contact-block:hover {
+    background: var(--cosmic-card-bg-hover);
+    border-color: rgba(185, 48, 42, 0.35);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
+}
+.contact-block::before { display: none; }
+.contact-icon {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--cosmic-fg-2);
+}
+.contact-block:hover .contact-icon {
+    background: rgba(185, 48, 42, 0.18);
+    color: #ffd5d2;
+}
+.contact-block h3 { color: var(--cosmic-fg-3); }
+.contact-block p { color: #ffffff; }
+
+.contact-map { color: var(--cosmic-fg-3); }
+.contact-map-caption { color: var(--cosmic-fg-3); }
+.contact-map-caption strong { color: #ffd5d2; }
+
+/* ----- Footer: even darker glass over cosmic bg ----- */
+.site-footer {
+    background:
+        radial-gradient(ellipse 60% 100% at 50% 0%, rgba(185, 48, 42, 0.16), transparent 60%),
+        rgba(5, 3, 22, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--cosmic-border);
+}
+.site-footer a { color: var(--cosmic-fg-2); }
+.site-footer a:hover { color: #ffd5d2; }
+.footer-brand-cn { color: #ffffff; }
+.footer-brand-en { color: var(--cosmic-fg-3); }
+.footer-slogan { color: var(--cosmic-fg-3); }
+.footer-col p { color: var(--cosmic-fg-2); }
+.footer-bottom { color: var(--cosmic-fg-3); }
+
+/* ----- Reduced motion: keep static cosmic background, no orbital animations ----- */
+@media (prefers-reduced-motion: reduce) {
+    .hero-glow { animation: none !important; }
+}
+
+/* ----- Mobile: lighter atmosphere overlay so 3D still has presence ----- */
+@media (max-width: 767px) {
+    .cosmic-atmosphere {
+        background:
+            radial-gradient(ellipse 100% 80% at 50% 50%, transparent 25%, rgba(5,3,22,0.55) 75%, rgba(5,3,22,0.92) 100%);
+    }
+    .hero { min-height: 80vh; padding: 80px 0 96px; }
+}

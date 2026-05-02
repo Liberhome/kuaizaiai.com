@@ -13,9 +13,14 @@
     <meta property="og:image" content="https://kuaizaiai.com/assets/og-image.png">
     <meta property="og:url" content="https://kuaizaiai.com">
     <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://unpkg.com">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Cosmic 3D background (Three.js) -->
+    <canvas id="scene-canvas" aria-hidden="true"></canvas>
+    <div class="cosmic-atmosphere" aria-hidden="true"></div>
+
     <header class="site-header">
         <div class="container header-inner">
             <a href="/" class="brand">
@@ -394,5 +399,747 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- ====================================================================
+         Cosmic 3D background (ported from liberhome.top, MIT-style)
+         Three.js powers-of-10 zoom-out:
+         Earth-Moon -> Solar System -> Milky Way -> Local Group -> Laniakea
+         ==================================================================== -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+    <script type="module">
+      // Skip 3D entirely on very low-end devices / users that prefer reduced motion when also small viewport.
+      // We still render a static scene under prefers-reduced-motion to keep the visual identity.
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      import('three').then(async (THREE_NS) => {
+        const THREE = THREE_NS;
+        const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+        const { RenderPass }     = await import('three/addons/postprocessing/RenderPass.js');
+        const { UnrealBloomPass} = await import('three/addons/postprocessing/UnrealBloomPass.js');
+        const { OutputPass }     = await import('three/addons/postprocessing/OutputPass.js');
+
+        const clock = new THREE.Clock();
+
+        // Soft circular sprite texture (round particles instead of square)
+        function makeCircleTexture(size = 64) {
+          const c = document.createElement('canvas');
+          c.width = c.height = size;
+          const ctx = c.getContext('2d');
+          const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+          g.addColorStop(0.0, 'rgba(255,255,255,1.0)');
+          g.addColorStop(0.4, 'rgba(255,255,255,0.65)');
+          g.addColorStop(0.7, 'rgba(255,255,255,0.18)');
+          g.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, size, size);
+          const tex = new THREE.CanvasTexture(c);
+          tex.colorSpace = THREE.SRGBColorSpace;
+          return tex;
+        }
+        const circleTex = makeCircleTexture(128);
+
+        const canvas = document.getElementById('scene-canvas');
+        if (!canvas) return;
+
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.01, 10000);
+        cam.position.set(0, 0, 5);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.0 : 1.5));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+
+        // Lights for stages 1-2 (lit meshes)
+        const sunLight = new THREE.PointLight(0xfff0d0, 80, 80);
+        sunLight.position.set(5, 4, 5);
+        scene.add(sunLight);
+        const fillLight = new THREE.PointLight(0x6b7fff, 12, 60);
+        fillLight.position.set(-6, -3, 4);
+        scene.add(fillLight);
+        scene.add(new THREE.AmbientLight(0x222244, 0.4));
+
+        // Always-on starfield
+        const STAR_COUNT = isMobile ? 900 : 2200;
+        const starPos = new Float32Array(STAR_COUNT * 3);
+        const starColors = new Float32Array(STAR_COUNT * 3);
+        for (let i = 0; i < STAR_COUNT; i++) {
+          const r = 80 + Math.random() * 200;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          starPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+          starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+          starPos[i*3+2] = r * Math.cos(phi);
+          const tone = Math.random();
+          if (tone < 0.6) { starColors[i*3]=1; starColors[i*3+1]=1; starColors[i*3+2]=1; }
+          else if (tone < 0.85) { starColors[i*3]=0.7; starColors[i*3+1]=0.8; starColors[i*3+2]=1; }
+          else { starColors[i*3]=1; starColors[i*3+1]=0.85; starColors[i*3+2]=0.7; }
+        }
+        const starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+        const starMat = new THREE.PointsMaterial({
+          size: 0.6, vertexColors: true, transparent: true, opacity: 0.8,
+          blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+          map: circleTex, alphaTest: 0.001
+        });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        // STAGE 1 - Earth + Moon
+        const stage1 = new THREE.Group();
+        scene.add(stage1);
+
+        const earthMat = new THREE.ShaderMaterial({
+          uniforms: { uTime:{value:0}, uOpacity:{value:1}, uSunDir:{value:new THREE.Vector3(1,0,0)} },
+          transparent: true,
+          vertexShader: `
+            varying vec3 vPos; varying vec3 vNormal; varying vec3 vView; varying vec3 vWorldNormal;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              vWorldNormal = normalize(mat3(modelMatrix) * normal);
+              vec4 mv = modelViewMatrix * vec4(position, 1.0);
+              vView = normalize(-mv.xyz);
+              vPos = position;
+              gl_Position = projectionMatrix * mv;
+            }`,
+          fragmentShader: `
+            uniform float uTime; uniform float uOpacity; uniform vec3 uSunDir;
+            varying vec3 vPos; varying vec3 vNormal; varying vec3 vView; varying vec3 vWorldNormal;
+            float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
+            float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
+              return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                         mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+            float fbm(vec3 p){float v=0.0,a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}
+            void main() {
+              float continents = fbm(vPos * 1.4);
+              float clouds = fbm(vPos * 2.6 + vec3(uTime * 0.03, 0.0, 0.0));
+              vec3 ocean = vec3(0.05, 0.20, 0.45);
+              vec3 deepOcean = vec3(0.02, 0.10, 0.30);
+              vec3 land = vec3(0.20, 0.45, 0.20);
+              vec3 desert = vec3(0.50, 0.40, 0.20);
+              vec3 forest = vec3(0.12, 0.32, 0.15);
+              vec3 ice = vec3(0.85, 0.92, 0.95);
+              vec3 surface;
+              if (continents > 0.50) {
+                float landType = fbm(vPos * 3.0 + 7.0);
+                surface = mix(forest, land, smoothstep(0.40, 0.55, landType));
+                surface = mix(surface, desert, smoothstep(0.62, 0.74, continents));
+              } else {
+                surface = mix(deepOcean, ocean, smoothstep(0.30, 0.50, continents));
+              }
+              float lat = abs(normalize(vPos).y);
+              surface = mix(surface, ice, smoothstep(0.78, 0.92, lat));
+              float cloudVal = smoothstep(0.55, 0.75, clouds);
+              surface = mix(surface, vec3(1.0), cloudVal * 0.45);
+              float lambert = max(dot(vWorldNormal, uSunDir), 0.0);
+              float ambient = 0.025;
+              float dayMix = smoothstep(-0.1, 0.15, dot(vWorldNormal, uSunDir));
+              surface *= (ambient + lambert);
+              float fres = pow(1.0 - max(dot(vNormal, vView), 0.0), 2.5);
+              surface += vec3(0.25, 0.55, 0.95) * fres * 0.6 * dayMix;
+              gl_FragColor = vec4(surface, uOpacity);
+            }`
+        });
+        const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), earthMat);
+        stage1.add(earth);
+
+        const atmoMat = new THREE.ShaderMaterial({
+          uniforms: { uOpacity: { value: 1 } },
+          transparent: true, side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false,
+          vertexShader: `varying vec3 vN; void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+          fragmentShader: `uniform float uOpacity; varying vec3 vN;
+            void main(){ float i = max(0.0, 0.7 - dot(vN, vec3(0.0,0.0,1.0)));
+            i = pow(i, 3.0);
+            gl_FragColor = vec4(0.30, 0.55, 0.95, i * uOpacity); }`
+        });
+        const atmo = new THREE.Mesh(new THREE.SphereGeometry(1.18, 32, 32), atmoMat);
+        stage1.add(atmo);
+
+        const moonMat = new THREE.ShaderMaterial({
+          uniforms: { uOpacity: { value: 1 } },
+          transparent: true,
+          vertexShader: `
+            varying vec3 vPos; varying vec3 vNormal;
+            void main() { vPos = position; vNormal = normalize(normalMatrix * normal);
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+          fragmentShader: `
+            uniform float uOpacity; varying vec3 vPos; varying vec3 vNormal;
+            float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
+            float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
+              return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                         mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+            float fbm(vec3 p){float v=0.0,a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}
+            void main() {
+              float largeScale = fbm(vPos * 1.2);
+              float craters = fbm(vPos * 5.5);
+              float fineDetail = fbm(vPos * 22.0);
+              vec3 highlands = vec3(0.78, 0.76, 0.72);
+              vec3 maria     = vec3(0.30, 0.28, 0.26);
+              vec3 surface = mix(maria, highlands, smoothstep(0.40, 0.58, largeScale));
+              surface *= mix(0.75, 1.0, smoothstep(0.30, 0.55, craters));
+              surface *= (0.85 + fineDetail * 0.30);
+              vec3 lightDir = normalize(vec3(0.7, 0.4, 0.6));
+              float lambert = max(dot(vNormal, lightDir), 0.0);
+              float ambient = 0.04;
+              gl_FragColor = vec4(surface * (lambert + ambient), uOpacity);
+            }`
+        });
+        const moon = new THREE.Mesh(new THREE.SphereGeometry(0.27, 32, 32), moonMat);
+        moon.userData = { angle: 0 };
+        stage1.add(moon);
+
+        // STAGE 2 - Solar System
+        const stage2 = new THREE.Group();
+        scene.add(stage2);
+
+        const sunMat = new THREE.ShaderMaterial({
+          uniforms: { uTime: { value: 0 }, uOpacity: { value: 1 } },
+          transparent: true,
+          vertexShader: `varying vec3 vP; varying vec3 vN; varying vec3 vV;
+            void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.0); vV=normalize(-mv.xyz); vP=position; gl_Position=projectionMatrix*mv; }`,
+          fragmentShader: `
+            uniform float uTime; uniform float uOpacity;
+            varying vec3 vP; varying vec3 vN; varying vec3 vV;
+            float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
+            float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
+              return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                         mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+            float fbm(vec3 p){float v=0.0,a=0.5;for(int i=0;i<4;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}
+            void main(){
+              float n = fbm(vP * 3.0 + uTime * 0.4);
+              vec3 hot = vec3(1.0, 0.95, 0.7);
+              vec3 warm = vec3(1.0, 0.5, 0.1);
+              vec3 col = mix(warm, hot, n);
+              float fres = pow(1.0 - max(dot(vN, vV), 0.0), 1.2);
+              col += vec3(1.0, 0.4, 0.1) * fres * 0.8;
+              gl_FragColor = vec4(col, uOpacity);
+            }`
+        });
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(2.0, 32, 32), sunMat);
+        stage2.add(sun);
+
+        const coronaMat = new THREE.ShaderMaterial({
+          uniforms: { uOpacity: { value: 1 } },
+          transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false,
+          vertexShader: `varying vec3 vN; void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+          fragmentShader: `uniform float uOpacity; varying vec3 vN;
+            void main(){ float i = max(0.0, 0.5 - dot(vN, vec3(0.0,0.0,1.0)));
+            i = pow(i, 4.0);
+            gl_FragColor = vec4(1.0, 0.6, 0.2, i * uOpacity); }`
+        });
+        const corona = new THREE.Mesh(new THREE.SphereGeometry(3.0, 32, 32), coronaMat);
+        stage2.add(corona);
+
+        const planetSpec = [
+          { color: 0xa0a0a0, dist: 6.0,   size: 0.20, speed: 1.6 },
+          { color: 0xffcc88, dist: 8.0,   size: 0.40, speed: 1.2 },
+          { color: 0xff7755, dist: 13.0,  size: 0.28, speed: 0.85 },
+          { color: 0xddaa77, dist: 18.0,  size: 0.95, speed: 0.50 },
+          { color: 0xeebb88, dist: 23.0,  size: 0.80, speed: 0.40, hasRing: true },
+          { color: 0x88ccdd, dist: 27.5,  size: 0.50, speed: 0.30 },
+          { color: 0x4477aa, dist: 31.5,  size: 0.50, speed: 0.25 }
+        ];
+        const planets = [];
+        planetSpec.forEach(p => {
+          const m = new THREE.Mesh(
+            new THREE.SphereGeometry(p.size, 24, 24),
+            new THREE.MeshStandardMaterial({ color: p.color, roughness: 0.7, metalness: 0.1, transparent: true })
+          );
+          m.userData = { dist: p.dist, speed: p.speed, angle: Math.random() * Math.PI * 2 };
+          stage2.add(m);
+          planets.push(m);
+          if (p.hasRing) {
+            const sring = new THREE.Mesh(
+              new THREE.RingGeometry(p.size * 1.4, p.size * 2.2, 64),
+              new THREE.MeshBasicMaterial({ color: 0xddbb88, transparent: true, opacity: 0.6, side: THREE.DoubleSide })
+            );
+            sring.rotation.x = Math.PI / 2.2;
+            m.add(sring);
+          }
+        });
+
+        // STAGE 3 - Milky Way
+        const stage3 = new THREE.Group();
+        scene.add(stage3);
+
+        const GAL_COUNT = isMobile ? 4000 : 8000;
+        const galPos = new Float32Array(GAL_COUNT * 3);
+        const galCol = new Float32Array(GAL_COUNT * 3);
+        const ARMS = 4;
+        for (let i = 0; i < GAL_COUNT; i++) {
+          const armIdx = i % ARMS;
+          const armAngle = (armIdx / ARMS) * Math.PI * 2;
+          const r = Math.pow(Math.random(), 0.65) * 7.5;
+          const spiral = armAngle + r * 0.55 + (Math.random() - 0.5) * 0.4;
+          const armScatter = (Math.random() - 0.5) * 0.5;
+          galPos[i*3]   = Math.cos(spiral) * r + Math.cos(spiral + Math.PI/2) * armScatter;
+          galPos[i*3+1] = (Math.random() - 0.5) * (0.6 / (r * 0.4 + 1));
+          galPos[i*3+2] = Math.sin(spiral) * r + Math.sin(spiral + Math.PI/2) * armScatter;
+          const t = r / 7.5;
+          galCol[i*3]   = 1.0 - t * 0.55;
+          galCol[i*3+1] = 0.92 - t * 0.35;
+          galCol[i*3+2] = 0.55 + t * 0.45;
+        }
+        const galGeo = new THREE.BufferGeometry();
+        galGeo.setAttribute('position', new THREE.BufferAttribute(galPos, 3));
+        galGeo.setAttribute('color', new THREE.BufferAttribute(galCol, 3));
+        const galMat = new THREE.PointsMaterial({
+          size: 0.07, vertexColors: true, transparent: true,
+          blending: THREE.AdditiveBlending, depthWrite: false, opacity: 1, sizeAttenuation: true,
+          map: circleTex, alphaTest: 0.001
+        });
+        const galaxy = new THREE.Points(galGeo, galMat);
+        stage3.add(galaxy);
+
+        const bulge = new THREE.Mesh(
+          new THREE.SphereGeometry(0.5, 24, 24),
+          new THREE.MeshBasicMaterial({ color: 0xffe4a8, transparent: true, opacity: 0.7 })
+        );
+        stage3.add(bulge);
+
+        const youHere = new THREE.Mesh(
+          new THREE.RingGeometry(0.18, 0.24, 32),
+          new THREE.MeshBasicMaterial({ color: 0xb9302a, transparent: true, opacity: 1, side: THREE.DoubleSide })
+        );
+        youHere.position.set(3.8, 0.05, 0.5);
+        youHere.rotation.x = Math.PI / 2;
+        stage3.add(youHere);
+
+        // STAGE 4 - Local Group (skipped on mobile to save fillrate)
+        const stage4 = new THREE.Group();
+        scene.add(stage4);
+
+        function makeGalaxyDisk(particleCount, radius, position, rotation, colorRGB, armCount = 3) {
+          const group = new THREE.Group();
+          const armPos = new Float32Array(particleCount * 3);
+          const armCol = new Float32Array(particleCount * 3);
+          for (let i = 0; i < particleCount; i++) {
+            const armIdx = i % armCount;
+            const r = Math.pow(Math.random(), 0.55) * radius;
+            const spiral = (armIdx / armCount) * Math.PI * 2 + r * 0.55 + (Math.random() - 0.5) * 0.25;
+            armPos[i*3]   = Math.cos(spiral) * r;
+            armPos[i*3+1] = (Math.random() - 0.5) * (0.18 / (r * 0.3 + 0.5));
+            armPos[i*3+2] = Math.sin(spiral) * r;
+            const t = r / radius;
+            armCol[i*3]   = colorRGB[0] * (1.0 - t * 0.55) + 0.30 * t;
+            armCol[i*3+1] = colorRGB[1] * (1.0 - t * 0.45) + 0.45 * t;
+            armCol[i*3+2] = colorRGB[2] * (1.0 - t * 0.05) + 0.55 * t;
+          }
+          const armG = new THREE.BufferGeometry();
+          armG.setAttribute('position', new THREE.BufferAttribute(armPos, 3));
+          armG.setAttribute('color', new THREE.BufferAttribute(armCol, 3));
+          const armM = new THREE.PointsMaterial({
+            size: 0.08, vertexColors: true, transparent: true,
+            blending: THREE.AdditiveBlending, depthWrite: false, opacity: 1, sizeAttenuation: true,
+            map: circleTex, alphaTest: 0.001
+          });
+          group.add(new THREE.Points(armG, armM));
+
+          const bulgeCount = Math.floor(particleCount * 0.18);
+          const bulgePos = new Float32Array(bulgeCount * 3);
+          const bulgeCol = new Float32Array(bulgeCount * 3);
+          for (let i = 0; i < bulgeCount; i++) {
+            const u = Math.random() * 2 - 1, phi = Math.random() * Math.PI * 2;
+            const sT = Math.sqrt(1 - u*u);
+            const r = -Math.log(1 - Math.random() * 0.95) * radius * 0.15;
+            bulgePos[i*3]   = sT * Math.cos(phi) * r;
+            bulgePos[i*3+1] = u * r * 0.6;
+            bulgePos[i*3+2] = sT * Math.sin(phi) * r;
+            const v = 0.85 + Math.random() * 0.15;
+            bulgeCol[i*3]   = 1.0 * v;
+            bulgeCol[i*3+1] = 0.92 * v;
+            bulgeCol[i*3+2] = 0.65 * v;
+          }
+          const bulgeG = new THREE.BufferGeometry();
+          bulgeG.setAttribute('position', new THREE.BufferAttribute(bulgePos, 3));
+          bulgeG.setAttribute('color', new THREE.BufferAttribute(bulgeCol, 3));
+          const bulgeM = new THREE.PointsMaterial({
+            size: 0.13, vertexColors: true, transparent: true, opacity: 1,
+            blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+            map: circleTex, alphaTest: 0.001
+          });
+          group.add(new THREE.Points(bulgeG, bulgeM));
+
+          group.position.copy(position);
+          group.rotation.set(rotation.x, rotation.y, rotation.z);
+          return group;
+        }
+
+        function makeElliptical(particleCount, radius, position, rotation, colorRGB) {
+          const pos = new Float32Array(particleCount * 3);
+          const col = new Float32Array(particleCount * 3);
+          const oblate = 0.55 + Math.random() * 0.35;
+          for (let i = 0; i < particleCount; i++) {
+            const u = Math.random() * 2 - 1, phi = Math.random() * Math.PI * 2;
+            const sT = Math.sqrt(1 - u*u);
+            const r = -Math.log(1 - Math.random() * 0.95) * radius * 0.42;
+            pos[i*3]   = sT * Math.cos(phi) * r;
+            pos[i*3+1] = u * r * oblate;
+            pos[i*3+2] = sT * Math.sin(phi) * r;
+            const t = Math.min(1, r / radius);
+            col[i*3]   = colorRGB[0] * (1.0 - t * 0.25);
+            col[i*3+1] = colorRGB[1] * (1.0 - t * 0.40);
+            col[i*3+2] = colorRGB[2] * (1.0 - t * 0.55);
+          }
+          const g = new THREE.BufferGeometry();
+          g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+          const m = new THREE.PointsMaterial({
+            size: 0.10, vertexColors: true, transparent: true,
+            blending: THREE.AdditiveBlending, depthWrite: false, opacity: 1, sizeAttenuation: true,
+            map: circleTex, alphaTest: 0.001
+          });
+          const points = new THREE.Points(g, m);
+          points.position.copy(position);
+          points.rotation.set(rotation.x, rotation.y, rotation.z);
+          return points;
+        }
+
+        function makeNebula(particleCount, size, position, primaryColor, secondaryColor) {
+          const group = new THREE.Group();
+          const sec = secondaryColor || [primaryColor[0]*0.5, primaryColor[1]*0.5, primaryColor[2]*1.0];
+          const corePos = new Float32Array(Math.floor(particleCount * 0.45) * 3);
+          const coreCol = new Float32Array(Math.floor(particleCount * 0.45) * 3);
+          const coreCount = Math.floor(particleCount * 0.45);
+          for (let i = 0; i < coreCount; i++) {
+            const r1 = (Math.random() + Math.random() - 1) * size;
+            const r2 = (Math.random() + Math.random() - 1) * size * 0.6;
+            const r3 = (Math.random() + Math.random() - 1) * size;
+            corePos[i*3]   = r1; corePos[i*3+1] = r2; corePos[i*3+2] = r3;
+            const dist = Math.sqrt(r1*r1 + r2*r2 + r3*r3) / size;
+            const intensity = Math.max(0.5, 1.2 - dist * 0.7);
+            coreCol[i*3]   = primaryColor[0] * intensity;
+            coreCol[i*3+1] = primaryColor[1] * intensity;
+            coreCol[i*3+2] = primaryColor[2] * intensity;
+          }
+          const coreG = new THREE.BufferGeometry();
+          coreG.setAttribute('position', new THREE.BufferAttribute(corePos, 3));
+          coreG.setAttribute('color', new THREE.BufferAttribute(coreCol, 3));
+          const coreM = new THREE.PointsMaterial({
+            size: 0.28, vertexColors: true, transparent: true, opacity: 0.95,
+            blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+            map: circleTex, alphaTest: 0.001
+          });
+          group.add(new THREE.Points(coreG, coreM));
+          group.position.copy(position);
+          return group;
+        }
+
+        // Local Group population (lighter on mobile)
+        if (!isMobile) {
+          stage4.add(makeGalaxyDisk(3500, 3.0, new THREE.Vector3(0, 0, 0),     new THREE.Euler(0, 0, 0),       [1.0, 0.85, 0.65], 4));
+          stage4.add(makeGalaxyDisk(3200, 3.5, new THREE.Vector3(11, 2, -4),   new THREE.Euler(0.4, 0.3, 0.1), [0.85, 0.75, 1.0], 3));
+          stage4.add(makeGalaxyDisk(2000, 2.0, new THREE.Vector3(-9, -2, 4),   new THREE.Euler(0.5, 0.4, 0),   [0.75, 0.95, 1.0], 3));
+          stage4.add(makeElliptical(1400, 1.4, new THREE.Vector3(13, 4, 2),    new THREE.Euler(0.3, 0.5, 0),   [1.0, 0.85, 0.6]));
+          stage4.add(makeElliptical(1000, 1.1, new THREE.Vector3(15, -1, 5),   new THREE.Euler(0.2, 0.7, 0),   [1.0, 0.80, 0.55]));
+          stage4.add(makeElliptical(700,  0.85, new THREE.Vector3(-12, 3, -2), new THREE.Euler(0.4, 0.2, 0.5), [1.0, 0.78, 0.50]));
+          stage4.add(makeNebula(550, 1.5,  new THREE.Vector3(2, 3, 6),    [1.0, 0.35, 0.55], [0.55, 0.20, 0.80]));
+          stage4.add(makeNebula(450, 1.3,  new THREE.Vector3(-5, -1, -8), [0.40, 0.65, 1.0],  [0.20, 0.30, 0.85]));
+          stage4.add(makeNebula(400, 1.1,  new THREE.Vector3(8, 5, -3),   [1.0, 0.55, 0.20],  [0.85, 0.25, 0.30]));
+        }
+
+        // STAGE 5 - Laniakea (skipped on mobile)
+        const stage5 = new THREE.Group();
+        scene.add(stage5);
+
+        if (!isMobile) {
+          const NODES = [];
+          NODES.push(new THREE.Vector3(0, 0, 0));
+          for (let i = 0; i < 8; i++) {
+            NODES.push(new THREE.Vector3((Math.random()-0.5)*18, (Math.random()-0.5)*14, (Math.random()-0.5)*14));
+          }
+          for (let i = 0; i < 22; i++) {
+            NODES.push(new THREE.Vector3((Math.random()-0.5)*44, (Math.random()-0.5)*32, (Math.random()-0.5)*32));
+          }
+          const FIL_COUNT = 32;
+          const GAL_PER_FIL = 550;
+          const NODE_DENSITY = 280;
+          const TOTAL_LAN = FIL_COUNT * GAL_PER_FIL + NODES.length * NODE_DENSITY;
+          const lanPos = new Float32Array(TOTAL_LAN * 3);
+          const lanCol = new Float32Array(TOTAL_LAN * 3);
+          let lanIdx = 0;
+          const filamentPairs = [];
+          for (let f = 0; f < FIL_COUNT; f++) {
+            const a = NODES[Math.floor(Math.random() * NODES.length)];
+            let b;
+            do { b = NODES[Math.floor(Math.random() * NODES.length)]; } while (b === a);
+            filamentPairs.push([a, b]);
+            for (let g = 0; g < GAL_PER_FIL; g++) {
+              const t = Math.random();
+              const point = a.clone().lerp(b, t);
+              const jitterRadius = 1.2 * (1 - Math.abs(t - 0.5) * 2 * 0.6);
+              point.x += (Math.random() - 0.5) * jitterRadius;
+              point.y += (Math.random() - 0.5) * jitterRadius;
+              point.z += (Math.random() - 0.5) * jitterRadius;
+              lanPos[lanIdx*3]   = point.x;
+              lanPos[lanIdx*3+1] = point.y;
+              lanPos[lanIdx*3+2] = point.z;
+              const galType = Math.random();
+              if (galType < 0.4)      { lanCol[lanIdx*3]=1.0;  lanCol[lanIdx*3+1]=0.85; lanCol[lanIdx*3+2]=0.55; }
+              else if (galType < 0.85){ lanCol[lanIdx*3]=0.85; lanCol[lanIdx*3+1]=0.85; lanCol[lanIdx*3+2]=1.0;  }
+              else                    { lanCol[lanIdx*3]=1.0;  lanCol[lanIdx*3+1]=0.65; lanCol[lanIdx*3+2]=0.85; }
+              lanIdx++;
+            }
+          }
+          NODES.forEach(n => {
+            for (let i = 0; i < NODE_DENSITY; i++) {
+              const p = n.clone().add(new THREE.Vector3((Math.random()-0.5)*2.2, (Math.random()-0.5)*2.2, (Math.random()-0.5)*2.2));
+              lanPos[lanIdx*3]   = p.x; lanPos[lanIdx*3+1] = p.y; lanPos[lanIdx*3+2] = p.z;
+              lanCol[lanIdx*3]   = 1.0;
+              lanCol[lanIdx*3+1] = 0.95 + Math.random() * 0.05;
+              lanCol[lanIdx*3+2] = 0.85 + Math.random() * 0.15;
+              lanIdx++;
+            }
+          });
+          const lanGeo = new THREE.BufferGeometry();
+          lanGeo.setAttribute('position', new THREE.BufferAttribute(lanPos, 3));
+          lanGeo.setAttribute('color', new THREE.BufferAttribute(lanCol, 3));
+          const lanMat = new THREE.PointsMaterial({
+            size: 0.18, vertexColors: true, transparent: true,
+            blending: THREE.AdditiveBlending, depthWrite: false, opacity: 1, sizeAttenuation: true,
+            map: circleTex, alphaTest: 0.001
+          });
+          stage5.add(new THREE.Points(lanGeo, lanMat));
+
+          const filLinePositions = [];
+          filamentPairs.forEach(([a, b]) => filLinePositions.push(a.x, a.y, a.z, b.x, b.y, b.z));
+          const filLineGeo = new THREE.BufferGeometry();
+          filLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(filLinePositions, 3));
+          const filLineMat = new THREE.LineBasicMaterial({
+            color: 0xb9302a, transparent: true, opacity: 0.18,
+            blending: THREE.AdditiveBlending, depthWrite: false
+          });
+          stage5.add(new THREE.LineSegments(filLineGeo, filLineMat));
+
+          const greatAttractor = new THREE.Mesh(
+            new THREE.SphereGeometry(1.8, 48, 48),
+            new THREE.MeshBasicMaterial({ color: 0xfff0b0, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false })
+          );
+          stage5.add(greatAttractor);
+        }
+
+        // Stage layout
+        const allStages = [stage1, stage2, stage3, stage4, stage5];
+        const stagePositions = [
+          new THREE.Vector3(0,    0, 0),
+          new THREE.Vector3(-10.5, 0, 0),
+          new THREE.Vector3(-14.3, 0, 0),
+          new THREE.Vector3(50,   0, -200),
+          new THREE.Vector3(-300, 0, -1000)
+        ];
+        allStages.forEach((s, i) => s.position.copy(stagePositions[i]));
+
+        const stageMats = allStages.map(s => {
+          const list = [];
+          s.traverse(o => { if (o.material) list.push(o.material); });
+          return list;
+        });
+        function setStageOpacity(idx, op) {
+          const o = Math.max(0, Math.min(1, op));
+          stageMats[idx].forEach(m => {
+            if (m.uniforms && m.uniforms.uOpacity) m.uniforms.uOpacity.value = o;
+            else m.opacity = o;
+            m.transparent = true;
+          });
+          allStages[idx].visible = o > 0.005;
+        }
+
+        // Camera waypoints
+        const waypoints = [
+          { pos: new THREE.Vector3(-1.8, 0, 5.5),     look: new THREE.Vector3(-1.8, 0, 0),     bloom: 0.6 },
+          { pos: new THREE.Vector3(-5, 22, 28),       look: new THREE.Vector3(-10.5, 0, 0),    bloom: 0.85 },
+          { pos: new THREE.Vector3(-14.3, 16, 8),     look: new THREE.Vector3(-14.3, 0, 0),    bloom: 1.3 },
+          { pos: new THREE.Vector3(50, 18, -185),     look: new THREE.Vector3(50, 0, -200),    bloom: 1.2 },
+          { pos: new THREE.Vector3(-300, 22, -983),   look: new THREE.Vector3(-300, 0, -1000), bloom: 1.8 }
+        ];
+
+        // Postprocessing (bloom only on desktop)
+        let composer = null;
+        let bloomPass = null;
+        if (!isMobile) {
+          composer = new EffectComposer(renderer);
+          composer.addPass(new RenderPass(scene, cam));
+          bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.6, 0.5, 0.05
+          );
+          composer.addPass(bloomPass);
+          composer.addPass(new OutputPass());
+        }
+
+        function onResize() {
+          const w = window.innerWidth, h = window.innerHeight;
+          renderer.setSize(w, h);
+          if (composer) composer.setSize(w, h);
+          cam.aspect = w / h;
+          cam.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', onResize);
+
+        // Mouse parallax
+        const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+        if (!reduceMotion) {
+          window.addEventListener('mousemove', (e) => {
+            mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.ty = -(e.clientY / window.innerHeight) * 2 + 1;
+          });
+        }
+
+        // Scroll-driven progress
+        const scrollState = { progress: 0, target: 0 };
+        function updateScroll() {
+          const max = document.body.scrollHeight - window.innerHeight;
+          scrollState.target = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+        }
+        updateScroll();
+        window.addEventListener('scroll', updateScroll, { passive: true });
+        window.addEventListener('resize', updateScroll);
+
+        const _v = new THREE.Vector3();
+        const _v2 = new THREE.Vector3();
+
+        // Mobile cap stages at 0..2 (Earth, Solar, Milky Way) — no Local Group / Laniakea cost
+        const STAGE_MAX = isMobile ? 2 : 4;
+
+        function animate() {
+          requestAnimationFrame(animate);
+          const dt = Math.min(0.05, clock.getDelta());
+          const t = clock.elapsedTime;
+
+          // Reduced motion: freeze scene-time but keep scroll-based camera
+          const animT = reduceMotion ? 0 : t;
+
+          scrollState.progress += (scrollState.target - scrollState.progress) * 0.06;
+          const p = scrollState.progress;
+          mouse.x += (mouse.tx - mouse.x) * 0.06;
+          mouse.y += (mouse.ty - mouse.y) * 0.06;
+
+          // Stage cross-fade
+          const stageF = p * STAGE_MAX;
+          const HALF_WINDOW = 1.4;
+          for (let i = 0; i < 5; i++) {
+            if (i === 0) { setStageOpacity(0, 1); continue; }
+            if (i > STAGE_MAX) { setStageOpacity(i, 0); continue; }
+            const d = Math.abs(stageF - i);
+            let op;
+            if (d >= HALF_WINDOW) op = 0;
+            else { const tt = 1 - d / HALF_WINDOW; op = tt * tt * (3 - 2 * tt); }
+            setStageOpacity(i, op);
+          }
+
+          // Earth orbit
+          const earthOrbitAngle = animT * 0.4;
+          const sunWorldPos = stagePositions[1];
+          const earthWorldX = sunWorldPos.x + Math.cos(earthOrbitAngle) * 10.5;
+          const earthWorldZ = sunWorldPos.z + Math.sin(earthOrbitAngle) * 10.5;
+          stage1.position.set(earthWorldX, 0, earthWorldZ);
+          waypoints[0].pos.set(earthWorldX - 1.8, 0, earthWorldZ + 5.5);
+          waypoints[0].look.set(earthWorldX - 1.8, 0, earthWorldZ);
+
+          // Stage scaling for powers-of-10
+          let s1Scale;
+          if (p < 0.30) s1Scale = 1;
+          else if (p < 0.50) s1Scale = 1 - (p - 0.30) * 4.95;
+          else s1Scale = 0.01 * Math.max(0, 1 - (p - 0.50) * 5);
+          stage1.scale.setScalar(Math.max(0, s1Scale));
+          let s2Scale;
+          if (p < 0.40) s2Scale = 1;
+          else if (p < 0.60) s2Scale = 1 - (p - 0.40) * 4.5;
+          else if (p < 0.75) s2Scale = 0.1 * (1 - (p - 0.60) / 0.15);
+          else s2Scale = 0;
+          stage2.scale.setScalar(Math.max(0, s2Scale));
+
+          // Camera waypoints
+          const idx0 = Math.min(Math.floor(stageF), STAGE_MAX);
+          const idx1 = Math.min(idx0 + 1, STAGE_MAX);
+          const lt = stageF - idx0;
+          const ease = lt * lt * (3 - 2 * lt);
+          const wpA = waypoints[idx0], wpB = waypoints[idx1];
+          _v.copy(wpA.pos).lerp(wpB.pos, ease);
+          _v2.copy(wpA.look).lerp(wpB.look, ease);
+          _v.x += mouse.x * 0.5;
+          _v.y += mouse.y * 0.3;
+          cam.position.lerp(_v, 0.05);
+          cam.lookAt(_v2);
+
+          if (stage1.visible) {
+            earthMat.uniforms.uTime.value = animT;
+            const sunDirX = sunWorldPos.x - earthWorldX;
+            const sunDirZ = sunWorldPos.z - earthWorldZ;
+            const sunDirLen = Math.sqrt(sunDirX*sunDirX + sunDirZ*sunDirZ) || 1;
+            earthMat.uniforms.uSunDir.value.set(sunDirX/sunDirLen, 0, sunDirZ/sunDirLen);
+            earth.rotation.y = animT * 0.25;
+            earth.rotation.x = Math.sin(animT * 0.15) * 0.04;
+            moon.userData.angle += dt * 0.4 * (reduceMotion ? 0 : 1);
+            const ma = moon.userData.angle;
+            const r = 3.6;
+            const lx = Math.cos(ma) * r;
+            const lz = Math.sin(ma) * r;
+            const tiltX = 0.45, tiltZ = 0.2;
+            const cosX = Math.cos(tiltX), sinX = Math.sin(tiltX);
+            const cosZ = Math.cos(tiltZ), sinZ = Math.sin(tiltZ);
+            const y1 = sinX * lz, z1 = cosX * lz, x1 = lx;
+            const x2 = cosZ * x1 - sinZ * y1;
+            const y2 = sinZ * x1 + cosZ * y1;
+            moon.position.set(x2, y2, z1);
+            moon.rotation.y += dt * 1.5 * (reduceMotion ? 0 : 1);
+          }
+          if (stage2.visible) {
+            sunMat.uniforms.uTime.value = animT;
+            sun.rotation.y = animT * 0.18;
+            corona.rotation.y = -animT * 0.08;
+            corona.scale.setScalar(1 + Math.sin(animT * 1.0) * 0.04);
+            planets.forEach(pl => {
+              pl.userData.angle += dt * pl.userData.speed * 0.4 * (reduceMotion ? 0 : 1);
+              pl.position.set(Math.cos(pl.userData.angle) * pl.userData.dist, 0, Math.sin(pl.userData.angle) * pl.userData.dist);
+              pl.rotation.y += dt * 1.2 * (reduceMotion ? 0 : 1);
+            });
+          }
+          if (stage3.visible) {
+            galaxy.rotation.y = animT * 0.35;
+            bulge.scale.setScalar(1 + Math.sin(animT * 2.5) * 0.08);
+            bulge.rotation.y = animT * 0.8;
+            youHere.rotation.z = animT * 1.5;
+            youHere.scale.setScalar(1 + Math.sin(animT * 4) * 0.3);
+            const yhAngle = animT * 0.35 + 0.3;
+            youHere.position.set(Math.cos(yhAngle) * 3.8, 0.05, Math.sin(yhAngle) * 3.8);
+          }
+          if (stage4.visible && !isMobile) {
+            stage4.children.forEach((g, i) => {
+              const dir = (i % 2 === 0) ? 1 : -1;
+              g.rotation.y += dt * dir * (0.18 + i * 0.025) * (reduceMotion ? 0 : 1);
+              g.rotation.z += dt * dir * 0.04 * (reduceMotion ? 0 : 1);
+            });
+          }
+
+          stars.position.copy(cam.position);
+          stars.rotation.y = animT * 0.012;
+          stars.rotation.x = animT * 0.005;
+
+          if (composer) {
+            bloomPass.strength = wpA.bloom + (wpB.bloom - wpA.bloom) * ease;
+            composer.render();
+          } else {
+            renderer.render(scene, cam);
+          }
+        }
+        animate();
+      }).catch(err => {
+        console.warn('Cosmic 3D background failed to load:', err);
+        // Fall back to static bg via class on body
+        document.body.classList.add('no-3d');
+      });
+    </script>
 </body>
 </html>
