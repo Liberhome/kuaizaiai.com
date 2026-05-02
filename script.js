@@ -67,10 +67,10 @@
             'timeline.title': '公司里程碑 // MILESTONES',
             'timeline.t1.role': '公司成立',
             'timeline.t1.desc': '在海南澄迈完成工商注册与 ICP 备案',
-            'timeline.t2.role': '产品矩阵上线',
+            'timeline.t2.role': '产品系列上线',
             'timeline.t2.desc': '首批自研 iOS / Android 原生应用陆续发布',
             'timeline.t3.role': '企业服务扩张',
-            'timeline.t3.desc': '服务政府与连锁机构客户，沉淀行业方案',
+            'timeline.t3.desc': '服务政府与连锁机构客户，建立行业方案',
             'timeline.t4.role': '海外业务起步',
             'timeline.t4.desc': '依托海南自贸港政策面向全球用户提供服务',
 
