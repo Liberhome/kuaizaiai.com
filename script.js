@@ -1,7 +1,10 @@
 /* ==========================================================================
-   Kuaizai Intelligence - Language Switcher
-   Default: zh-CN. Toggle button in header switches between zh-CN and en.
-   Persists preference in localStorage.
+   Kuaizai Intelligence - Site Scripts  v2.0
+   - i18n (zh-CN default, en toggle, persisted in localStorage)
+   - IntersectionObserver reveal-on-scroll
+   - Right-side scroll rail active-pip tracking
+   - Sticky header shadow on scroll
+   - Stat count-up animation
    ========================================================================== */
 
 (function () {
@@ -9,7 +12,9 @@
 
     var STORAGE_KEY = 'kuaizai.lang';
 
+    // ----------------------------------------------------------------------
     // Translation dictionary. Keys correspond to data-i18n attributes in HTML.
+    // ----------------------------------------------------------------------
     var translations = {
         'zh-CN': {
             'page.title': '快哉智能（澄迈）科技有限责任公司',
@@ -20,13 +25,27 @@
 
             'nav.about': '关于',
             'nav.services': '业务',
+            'nav.value': '理念',
             'nav.contact': '联系',
 
-            'hero.eyebrow': '快哉智能（澄迈）科技有限责任公司',
+            // Right-side scroll rail labels (uppercase mono)
+            'rail.hero': '首页',
+            'rail.about': '关于',
+            'rail.services': '业务',
+            'rail.value': '理念',
+            'rail.contact': '联系',
+
+            'hero.eyebrow': '快哉智能（澄迈）科技有限责任公司 · 接洽中',
             'hero.title': 'AI 时代的软件团队',
+            'hero.title.lead': 'AI 时代的',
+            'hero.title.accent': '软件团队',
             'hero.subtitle': '提供 APP、小程序、网站开发，以及 AI 智能体与企业级数字化解决方案。立足海南自贸港，服务全球用户。',
+            'hero.pill.1': 'iOS / Android 原生',
+            'hero.pill.2': 'AI 工程化',
+            'hero.pill.3': '企业交付',
             'hero.founded': '成立于 2026 年 4 月',
             'hero.location': '注册于海南澄迈',
+            'hero.stamp': 'EST.<br>2026',
 
             'about.kicker': '关于',
             'about.title': '关于我们',
@@ -43,6 +62,17 @@
             'about.fact3.v': '海南省澄迈县老城镇',
             'about.fact4.k': '法定代表人',
             'about.fact4.v': '李柏宏（CEO）',
+
+            // Timeline (新增)
+            'timeline.title': '公司里程碑 // MILESTONES',
+            'timeline.t1.role': '公司成立',
+            'timeline.t1.desc': '在海南澄迈完成工商注册与 ICP 备案',
+            'timeline.t2.role': '产品矩阵上线',
+            'timeline.t2.desc': '首批自研 iOS / Android 原生应用陆续发布',
+            'timeline.t3.role': '企业服务扩张',
+            'timeline.t3.desc': '服务政府与连锁机构客户，沉淀行业方案',
+            'timeline.t4.role': '海外业务起步',
+            'timeline.t4.desc': '依托海南自贸港政策面向全球用户提供服务',
 
             'services.kicker': '业务',
             'services.title': '业务范围',
@@ -64,6 +94,18 @@
             'services.s4.titleEn': 'Developer Tooling',
             'services.s4.body': '面向 AI 时代开发者的效率工具与工程化方案。',
 
+            // Value section (新增)
+            'value.kicker': '理念',
+            'value.title': '我们如何做事',
+            'value.quote': '优秀的软件来自<em>克制而专注</em>的团队。我们相信小而稳定的协作密度，比规模更接近长期价值。',
+            'value.attribution': '快哉智能 · 团队信条',
+            'value.p1.title': '原生优先',
+            'value.p1.body': '所有移动端产品坚持 Swift / Kotlin 原生开发，从体验到长期可维护性都不打折扣。',
+            'value.p2.title': '长期主义',
+            'value.p2.body': '不追逐短期流量，把每一个产品当作可以服务用户十年的资产来打磨。',
+            'value.p3.title': '克制交付',
+            'value.p3.body': '小团队、高密度、长周期。承诺交付的每一项都对得起客户的信任与时间。',
+
             'contact.kicker': '联系',
             'contact.title': '联系我们',
             'contact.email.title': '业务邮箱',
@@ -73,6 +115,8 @@
             'contact.legal.body': '李柏宏 / Baihong Li<br>Chief Executive Officer',
             'contact.hours.title': '工作时间',
             'contact.hours.body': '周一至周五 09:00 – 18:00<br>(GMT+8 北京时间)',
+            'contact.map.caption': '总部所在 ·',
+            'contact.map.location': '海南 · 澄迈',
 
             'footer.brand.cn': '快哉智能（澄迈）科技有限责任公司',
             'footer.brand.en': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
@@ -137,13 +181,26 @@
 
             'nav.about': 'About',
             'nav.services': 'Services',
+            'nav.value': 'Values',
             'nav.contact': 'Contact',
 
-            'hero.eyebrow': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
+            'rail.hero': 'HERO',
+            'rail.about': 'ABOUT',
+            'rail.services': 'SERVICES',
+            'rail.value': 'VALUES',
+            'rail.contact': 'CONTACT',
+
+            'hero.eyebrow': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd. · Accepting Engagements',
             'hero.title': 'A Software Team for the AI Era',
+            'hero.title.lead': 'A Software Team for ',
+            'hero.title.accent': 'the AI Era',
             'hero.subtitle': 'We build mobile apps, mini-programs and websites, and ship AI agent and enterprise digitalization solutions. Headquartered in the Hainan Free Trade Port, serving users worldwide.',
+            'hero.pill.1': 'iOS / Android Native',
+            'hero.pill.2': 'Applied AI',
+            'hero.pill.3': 'Enterprise Delivery',
             'hero.founded': 'Founded April 2026',
             'hero.location': 'Registered in Chengmai, Hainan',
+            'hero.stamp': 'EST.<br>2026',
 
             'about.kicker': 'About',
             'about.title': 'About Us',
@@ -160,6 +217,16 @@
             'about.fact3.v': 'Laocheng, Chengmai, Hainan',
             'about.fact4.k': 'Legal Representative',
             'about.fact4.v': 'Baihong Li (CEO)',
+
+            'timeline.title': 'Company Milestones // ROADMAP',
+            'timeline.t1.role': 'Company Founded',
+            'timeline.t1.desc': 'Business registration and ICP filing completed in Chengmai, Hainan.',
+            'timeline.t2.role': 'Product Lineup Launches',
+            'timeline.t2.desc': 'First batch of in-house native iOS / Android applications goes live.',
+            'timeline.t3.role': 'Enterprise Service Expansion',
+            'timeline.t3.desc': 'Serving government and multi-location chain clients; building industry playbooks.',
+            'timeline.t4.role': 'Global Reach',
+            'timeline.t4.desc': 'Leveraging the Hainan Free Trade Port to serve customers worldwide.',
 
             'services.kicker': 'Services',
             'services.title': 'What We Do',
@@ -181,6 +248,17 @@
             'services.s4.titleEn': '工程效率与工具',
             'services.s4.body': 'Productivity tools and engineering practices for the AI-era developer.',
 
+            'value.kicker': 'Values',
+            'value.title': 'How We Work',
+            'value.quote': 'Great software is built by <em>focused, restrained</em> teams. We believe small, durable collaboration density beats raw scale on the long path to value.',
+            'value.attribution': 'Kuaizai Intelligence · Team Tenets',
+            'value.p1.title': 'Native-First',
+            'value.p1.body': 'Every mobile product is built with Swift or Kotlin natively. We do not compromise on experience or long-term maintainability.',
+            'value.p2.title': 'Long-Termism',
+            'value.p2.body': 'We do not chase short-term traffic. We craft each product as an asset that can serve users for a decade.',
+            'value.p3.title': 'Restrained Delivery',
+            'value.p3.body': 'Small team, high density, long horizon. Every commitment we ship earns the trust and time our clients give us.',
+
             'contact.kicker': 'Contact',
             'contact.title': 'Get in Touch',
             'contact.email.title': 'Business Email',
@@ -190,6 +268,8 @@
             'contact.legal.body': 'Baihong Li / 李柏宏<br>Chief Executive Officer',
             'contact.hours.title': 'Business Hours',
             'contact.hours.body': 'Monday – Friday 09:00 – 18:00<br>(GMT+8 Beijing Time)',
+            'contact.map.caption': 'Headquartered in ·',
+            'contact.map.location': 'Chengmai · Hainan',
 
             'footer.brand.cn': '快哉智能（澄迈）科技有限责任公司',
             'footer.brand.en': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
@@ -246,6 +326,9 @@
         }
     };
 
+    // ----------------------------------------------------------------------
+    // i18n
+    // ----------------------------------------------------------------------
     function getPreferredLang() {
         try {
             var saved = localStorage.getItem(STORAGE_KEY);
@@ -260,7 +343,6 @@
 
         document.documentElement.setAttribute('lang', lang);
 
-        // Translate all elements with data-i18n
         var nodes = document.querySelectorAll('[data-i18n]');
         nodes.forEach(function (el) {
             var key = el.getAttribute('data-i18n');
@@ -276,7 +358,6 @@
             }
         });
 
-        // Update toggle button label: shows the language you would switch TO
         var toggle = document.getElementById('lang-toggle');
         if (toggle) {
             toggle.textContent = (lang === 'zh-CN') ? 'EN' : '中';
@@ -286,6 +367,178 @@
         try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* ignore */ }
     }
 
+    // ----------------------------------------------------------------------
+    // Reveal-on-scroll (translation of liberhome's .reveal pattern)
+    // Element gets class .is-in when it enters the viewport.
+    // ----------------------------------------------------------------------
+    function initReveal() {
+        var prefersReduce = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduce) {
+            // CSS already handles forced visibility under prefers-reduced-motion
+            return;
+        }
+
+        // Mark <html> so the initial-hidden CSS rule kicks in (avoids FOUC if JS fails)
+        document.documentElement.classList.add('js-ready');
+
+        var revealEls = document.querySelectorAll('.reveal');
+        if (!revealEls.length) return;
+
+        // Reveal anything already in view immediately
+        revealEls.forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) {
+                el.classList.add('is-in');
+            }
+        });
+
+        if (!('IntersectionObserver' in window)) {
+            // No IO support — just show all
+            revealEls.forEach(function (el) { el.classList.add('is-in'); });
+            return;
+        }
+
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-in');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+        revealEls.forEach(function (el) {
+            if (!el.classList.contains('is-in')) io.observe(el);
+        });
+
+        // Safety net: ensure nothing stays hidden after 1.5s
+        setTimeout(function () {
+            document.querySelectorAll('.reveal:not(.is-in)').forEach(function (el) {
+                el.classList.add('is-in');
+            });
+        }, 1500);
+    }
+
+    // ----------------------------------------------------------------------
+    // Right-side scroll rail: highlight active section
+    // ----------------------------------------------------------------------
+    function initScrollRail() {
+        var rail = document.getElementById('scroll-rail');
+        if (!rail) return;
+        var pips = rail.querySelectorAll('.pip');
+        if (!pips.length) return;
+
+        var sectionEls = [];
+        pips.forEach(function (pip) {
+            var id = pip.getAttribute('data-section');
+            var el = id && document.getElementById(id);
+            sectionEls.push(el || null);
+        });
+
+        var rafScheduled = false;
+        function update() {
+            rafScheduled = false;
+            var vh = window.innerHeight;
+            var activeIdx = 0;
+            for (var i = sectionEls.length - 1; i >= 0; i--) {
+                var el = sectionEls[i];
+                if (!el) continue;
+                var r = el.getBoundingClientRect();
+                if (r.top < vh * 0.4) { activeIdx = i; break; }
+            }
+            pips.forEach(function (pp, i) {
+                pp.classList.toggle('is-active', i === activeIdx);
+            });
+        }
+        function onScroll() {
+            if (rafScheduled) return;
+            rafScheduled = true;
+            window.requestAnimationFrame(update);
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        update();
+    }
+
+    // ----------------------------------------------------------------------
+    // Sticky header: add subtle shadow once the page has been scrolled
+    // ----------------------------------------------------------------------
+    function initHeaderShadow() {
+        var header = document.querySelector('.site-header');
+        if (!header) return;
+        var ticking = false;
+        function update() {
+            ticking = false;
+            if (window.scrollY > 8) {
+                header.classList.add('is-scrolled');
+            } else {
+                header.classList.remove('is-scrolled');
+            }
+        }
+        window.addEventListener('scroll', function () {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(update);
+        }, { passive: true });
+        update();
+    }
+
+    // ----------------------------------------------------------------------
+    // Stat count-up animation (only triggers for purely-numeric targets)
+    // ----------------------------------------------------------------------
+    function initCounters() {
+        var prefersReduce = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduce || !('IntersectionObserver' in window)) return;
+
+        var counters = document.querySelectorAll('[data-counter]');
+        if (!counters.length) return;
+
+        function animateCount(el, target) {
+            var num = parseFloat(target);
+            if (!isFinite(num)) return;
+            var duration = 900;
+            var start = performance.now();
+            var prefix = '';
+            var suffix = '';
+            // Detect prefix / suffix around the number (e.g. ¥, K, +)
+            var m = target.match(/^([^\d.\-]*)([\d.\-]+)(.*)$/);
+            if (m) { prefix = m[1]; suffix = m[3]; }
+
+            function tick(now) {
+                var t = Math.min(1, (now - start) / duration);
+                // ease-out cubic
+                var p = 1 - Math.pow(1 - t, 3);
+                var v = num * p;
+                // Format: keep integer if target is integer, else 2dp
+                var s = (target.indexOf('.') === -1)
+                    ? Math.round(v).toString()
+                    : v.toFixed(2);
+                el.textContent = prefix + s + suffix;
+                if (t < 1) window.requestAnimationFrame(tick);
+                else el.textContent = target;  // snap to exact final value
+            }
+            window.requestAnimationFrame(tick);
+        }
+
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                var el = entry.target;
+                var target = el.getAttribute('data-target') || el.textContent.trim();
+                animateCount(el, target);
+                io.unobserve(el);
+            });
+        }, { threshold: 0.4 });
+
+        counters.forEach(function (el) { io.observe(el); });
+    }
+
+    // ----------------------------------------------------------------------
+    // Init
+    // ----------------------------------------------------------------------
     function init() {
         var initial = getPreferredLang();
         applyLang(initial);
@@ -298,6 +551,11 @@
                 applyLang(next);
             });
         }
+
+        initReveal();
+        initScrollRail();
+        initHeaderShadow();
+        initCounters();
     }
 
     if (document.readyState === 'loading') {
