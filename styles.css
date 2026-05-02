@@ -1926,6 +1926,12 @@ html[lang="en"] .brand-en { color: #ffffff; }
 }
 .hero-bg, .hero-grid { display: none; }
 
+.hero-inner {
+    /* Pin copy + art to TOP — logo image is taller than copy and was
+       pushing the eyebrow/title down via align-items: center */
+    align-items: start;
+}
+
 .hero-title {
     /* Wider cap so "AI 时代的软件团队" fits one line at 72px */
     max-width: 820px;
