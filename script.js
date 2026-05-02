@@ -13,7 +13,7 @@
     var translations = {
         'zh-CN': {
             'page.title': '快哉智能（澄迈）科技有限责任公司',
-            'page.description': '快哉智能（澄迈）科技有限责任公司 - AI 时代的应用工厂，自研 iOS/Android 原生应用矩阵，提供 AI 智能体、企业数字化与开发者工具链解决方案。',
+            'page.description': '快哉智能（澄迈）科技有限责任公司 - 立足海南自贸港的软件团队，提供 APP、小程序、网站开发，以及 AI 智能体与企业数字化解决方案。',
 
             'brand.cn': '快哉智能',
             'brand.en': 'Kuaizai Intelligence',
@@ -23,8 +23,8 @@
             'nav.contact': '联系',
 
             'hero.eyebrow': '快哉智能（澄迈）科技有限责任公司',
-            'hero.title': 'AI 时代的应用工厂',
-            'hero.subtitle': '自研原生应用矩阵，构建 AI 智能体与企业级数字化解决方案。立足海南自贸港,服务全球用户。',
+            'hero.title': 'AI 时代的软件团队',
+            'hero.subtitle': '提供 APP、小程序、网站开发，以及 AI 智能体与企业级数字化解决方案。立足海南自贸港，服务全球用户。',
             'hero.founded': '成立于 2026 年 4 月',
             'hero.location': '注册于海南澄迈',
 
@@ -46,23 +46,23 @@
 
             'services.kicker': '业务',
             'services.title': '业务范围',
-            'services.lead': '我们围绕四条主线持续投入，每一条都由独立的产品与交付能力支撑。',
+            'services.lead': '我们围绕四条业务线持续投入，覆盖移动端、智能化、企业级与工程效率。',
             'stats.s1': '成立日期',
             'stats.s2': '注册资本',
             'stats.s3': '业务主线',
             'stats.s4': '原生优先',
-            'services.s1.title': 'APP 工厂',
-            'services.s1.titleEn': 'Mobile App Development',
-            'services.s1.body': '自研 iOS / Android 原生应用矩阵，覆盖健康管理、AI 工具、生活效率等场景。坚持原生优先，追求长期可维护与极致体验。',
+            'services.s1.title': 'APP / 小程序 / 网站开发',
+            'services.s1.titleEn': 'Apps · Mini-Programs · Websites',
+            'services.s1.body': 'iOS / Android 原生应用、微信小程序、企业官网及 H5 应用。坚持原生优先，追求长期可维护与极致体验。',
             'services.s2.title': 'AI 智能体',
             'services.s2.titleEn': 'AI Agent Solutions',
             'services.s2.body': '基于大语言模型的智能体应用与企业级 AI 咨询，从原型到生产环境的全链路工程能力。',
             'services.s3.title': '企业数字化',
             'services.s3.titleEn': 'Enterprise Digital Solutions',
             'services.s3.body': '面向政府机构与连锁经营企业，提供数字化转型咨询与定制化系统交付。',
-            'services.s4.title': '技术工具链',
+            'services.s4.title': '工程效率与工具',
             'services.s4.titleEn': 'Developer Tooling',
-            'services.s4.body': '面向 AI 时代开发者的效率工具，将内部生产力沉淀为可复用的产品。',
+            'services.s4.body': '面向 AI 时代开发者的效率工具与工程化方案。',
 
             'contact.kicker': '联系',
             'contact.title': '联系我们',
@@ -76,7 +76,7 @@
 
             'footer.brand.cn': '快哉智能（澄迈）科技有限责任公司',
             'footer.brand.en': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
-            'footer.slogan': 'AI 时代的应用工厂 · The App Factory of the AI Era',
+            'footer.slogan': 'AI 时代的软件团队 · A Software Team for the AI Era',
             'footer.uscc': '统一社会信用代码',
             'footer.address': '地址：海南省澄迈县老城镇南海大道1237号3栋10层1009房',
             'footer.email': '邮箱',
@@ -130,7 +130,7 @@
 
         'en': {
             'page.title': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
-            'page.description': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd. — The App Factory of the AI Era. We build native iOS/Android applications, AI agent solutions, enterprise digitalization, and developer tooling.',
+            'page.description': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd. — A software team for the AI era based in the Hainan Free Trade Port. We build mobile apps, mini-programs and websites, plus AI agent solutions and enterprise digitalization.',
 
             'brand.cn': '快哉智能',
             'brand.en': 'Kuaizai Intelligence',
@@ -140,8 +140,8 @@
             'nav.contact': 'Contact',
 
             'hero.eyebrow': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
-            'hero.title': 'The App Factory of the AI Era',
-            'hero.subtitle': 'We build a portfolio of native mobile applications and ship AI agent and enterprise digitalization solutions. Headquartered in the Hainan Free Trade Port, serving users worldwide.',
+            'hero.title': 'A Software Team for the AI Era',
+            'hero.subtitle': 'We build mobile apps, mini-programs and websites, and ship AI agent and enterprise digitalization solutions. Headquartered in the Hainan Free Trade Port, serving users worldwide.',
             'hero.founded': 'Founded April 2026',
             'hero.location': 'Registered in Chengmai, Hainan',
 
@@ -163,23 +163,23 @@
 
             'services.kicker': 'Services',
             'services.title': 'What We Do',
-            'services.lead': 'Four focused business lines, each backed by dedicated product and delivery capability.',
+            'services.lead': 'Four focused business lines spanning mobile, intelligence, enterprise, and engineering productivity.',
             'stats.s1': 'Founded',
             'stats.s2': 'Registered Capital',
             'stats.s3': 'Business Lines',
             'stats.s4': 'Native-First',
-            'services.s1.title': 'Mobile App Development',
-            'services.s1.titleEn': 'APP 工厂',
-            'services.s1.body': 'A portfolio of native iOS and Android applications spanning health, AI productivity tools, and lifestyle. We are native-first and optimize for long-term maintainability and quality of experience.',
+            'services.s1.title': 'Apps · Mini-Programs · Websites',
+            'services.s1.titleEn': 'APP / 小程序 / 网站开发',
+            'services.s1.body': 'Native iOS / Android apps, WeChat mini-programs, corporate websites and H5 applications. Native-first, optimized for long-term maintainability and quality of experience.',
             'services.s2.title': 'AI Agent Solutions',
             'services.s2.titleEn': 'AI 智能体',
             'services.s2.body': 'Applied LLM products and enterprise AI consulting, with end-to-end engineering capability from prototype to production.',
             'services.s3.title': 'Enterprise Digital Solutions',
             'services.s3.titleEn': '企业数字化',
             'services.s3.body': 'Digital transformation consulting and bespoke system delivery for government agencies and multi-location chain businesses.',
-            'services.s4.title': 'Developer Tooling',
-            'services.s4.titleEn': '技术工具链',
-            'services.s4.body': 'Productivity tools for the AI-era developer. We turn our internal leverage into reusable products.',
+            'services.s4.title': 'Engineering Productivity',
+            'services.s4.titleEn': '工程效率与工具',
+            'services.s4.body': 'Productivity tools and engineering practices for the AI-era developer.',
 
             'contact.kicker': 'Contact',
             'contact.title': 'Get in Touch',
@@ -193,7 +193,7 @@
 
             'footer.brand.cn': '快哉智能（澄迈）科技有限责任公司',
             'footer.brand.en': 'Kuaizai Intelligence (Chengmai) Technology Co., Ltd.',
-            'footer.slogan': 'The App Factory of the AI Era · AI 时代的应用工厂',
+            'footer.slogan': 'A Software Team for the AI Era · AI 时代的软件团队',
             'footer.uscc': 'Unified Social Credit Code',
             'footer.address': 'Address: Room 1009, 10/F, Bldg 3, No.1237 Nanhai Ave, Laocheng Town, Chengmai County, Hainan, China',
             'footer.email': 'Email',
