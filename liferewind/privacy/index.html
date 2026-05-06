@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeRewind 隐私政策 - 快哉智能（澄迈）科技有限责任公司</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/index.html" class="brand">
+                <span class="brand-mark"><img src="/assets/logo-mark.png" alt="快哉智能 KUAIZAI · AI" width="36" height="36"></span>
+                <span class="brand-name">
+                    <span class="brand-cn">快哉智能</span>
+                    <span class="brand-en">Kuaizai Intelligence</span>
+                </span>
+            </a>
+            <nav class="site-nav">
+                <a href="/index.html#about">关于</a>
+                <a href="/index.html#services">业务</a>
+                <a href="/index.html#contact">联系</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="container">
+            <div class="legal-content">
+                <h1>LifeRewind 隐私政策</h1>
+                <p class="legal-meta">生效日期：2026 年 5 月 6 日 · 最近更新：2026 年 5 月 6 日</p>
+
+                <p>快哉智能（澄迈）科技有限责任公司（以下简称"我们"）非常重视您的隐私。本隐私政策说明 LifeRewind iOS 应用（以下简称"本应用"或"LifeRewind"）如何收集、使用、存储、保护和披露您的信息。请您在使用本应用前完整阅读本政策。</p>
+
+                <h2>一、概述</h2>
+                <p>LifeRewind 是一款配合 Looki 智能设备使用的 iOS 应用，提供时间线回顾、AI 日报分析、漫画生成、人生预言等功能。本应用主要在您的设备本地以及您指定的 iCloud 账户中处理数据。我们尽可能减少向第三方服务传输的信息量，并使用业内通行的加密手段。</p>
+
+                <h2>二、我们收集的信息</h2>
+
+                <h3>2.1 您主动提供的信息</h3>
+                <ul>
+                    <li><strong>API 密钥配置（v1 仅个人开发模式）</strong>：您可在应用设置中粘贴自有的火山引擎、阿里云、DeepSeek、OpenAI、Anthropic 等服务的 API Key。这些密钥仅以 iOS Keychain 加密形式存储在本地设备，不会上传到我们的服务器。</li>
+                    <li><strong>Looki 账号凭据</strong>：用于从您的 Looki 智能设备同步生活片段。凭据由 Looki 官方机制管理。</li>
+                    <li><strong>预言家目标设定</strong>：您输入的人生目标文本，仅在生成预言时通过指定大模型 API 进行处理。</li>
+                </ul>
+
+                <h3>2.2 通过设备生成或同步的内容</h3>
+                <ul>
+                    <li><strong>生活片段（moments）</strong>：从 Looki 设备同步的时间、地点、活动、照片、视频等。</li>
+                    <li><strong>AI 生成内容</strong>：日报、漫画、预言结果。生成结果存储在本地及您的 iCloud 容器中。</li>
+                    <li><strong>使用配额数据</strong>：当月已使用的预言/漫画次数、点数包余额，仅存储于本地 UserDefaults，用于配额管理，不上传。</li>
+                </ul>
+
+                <h3>2.3 与购买相关的信息</h3>
+                <ul>
+                    <li><strong>App Store 订阅与内购凭证</strong>：通过 Apple StoreKit 处理，由 Apple 直接管理。我们仅接收订阅状态和内购成功标志，不接触您的支付方式、信用卡号、姓名或邮箱。</li>
+                </ul>
+
+                <h3>2.4 我们不收集的信息</h3>
+                <p>我们不收集您的设备 IDFA / 广告标识符、不进行行为追踪、不接入第三方分析 SDK（如友盟、Firebase Analytics、Sensors 等）、不在后台静默上传您的相册或通讯录、不读取您的位置信息（除非您主动在 moment 中含有位置标签）。</p>
+
+                <h2>三、信息使用目的</h2>
+                <ul>
+                    <li>为您提供本应用的核心功能（时间线、日报、漫画、预言、回忆墙）。</li>
+                    <li>记录您的订阅状态与配额使用情况，用于功能授权。</li>
+                    <li>响应您的支持请求与反馈。</li>
+                    <li>遵守适用法律法规要求。</li>
+                </ul>
+                <p>我们不会将您的信息用于上述目的之外的用途，不会用于广告投放、不会出售给任何第三方。</p>
+
+                <h2>四、第三方服务（API 调用清单）</h2>
+                <p>为提供 AI 功能，本应用会在您主动触发对应功能时，将必要的提示词和参数发送给以下第三方服务。我们仅传输完成功能所必需的最少内容，且不在请求中附带可识别您身份的元数据：</p>
+                <ul>
+                    <li><strong>火山引擎 Seedream（字节跳动）</strong>：将漫画生成提示词发送给图像生成 API。<a href="https://www.volcengine.com/docs/6256/64903" target="_blank" rel="noopener">隐私政策</a>。</li>
+                    <li><strong>阿里云通义万相 Qwen-VL</strong>：可选用于图像识别（视觉标签）。<a href="https://help.aliyun.com/zh/dashscope/" target="_blank" rel="noopener">阿里云政策</a>。</li>
+                    <li><strong>DeepSeek</strong>：将预言提示词发送给对话模型 API。<a href="https://platform.deepseek.com/privacy" target="_blank" rel="noopener">DeepSeek 隐私政策</a>。</li>
+                    <li><strong>Anthropic Claude</strong>：可选预言模型。<a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Anthropic 隐私政策</a>。</li>
+                    <li><strong>OpenAI ChatGPT</strong>：可选预言模型。<a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI 隐私政策</a>。</li>
+                    <li><strong>Looki Tech</strong>：智能项链生活片段同步。<a href="https://www.looki.tech" target="_blank" rel="noopener">Looki 政策</a>。</li>
+                    <li><strong>Apple StoreKit / iCloud</strong>：支付与跨设备数据同步，由 Apple 管理。<a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple 隐私政策</a>。</li>
+                </ul>
+                <p><strong>跨境传输提示</strong>：上述部分服务的服务器可能位于中国大陆境外。一旦您选择使用对应模型，您的提示词将依据相应服务商的隐私政策进行处理。</p>
+
+                <h2>五、数据存储与保留</h2>
+                <ul>
+                    <li><strong>本地数据</strong>：除生成内容、配额、API 密钥外，绝大部分数据均存储于您设备本地。</li>
+                    <li><strong>iCloud 数据</strong>：通过 Apple CloudKit 在您的 iCloud 账户内同步，存储于 Apple 数据中心，端到端加密由 Apple 管理。</li>
+                    <li><strong>保留期限</strong>：您可以随时在应用内删除生成内容；卸载应用时，本地数据全部清除；iCloud 数据可在 Apple ID 设置中按 LifeRewind 容器单独清除。</li>
+                </ul>
+
+                <h2>六、数据安全</h2>
+                <p>所有 API 网络通信均使用 HTTPS / TLS 1.2+ 加密。本地敏感数据（如 API 密钥）存储于 iOS Keychain，受系统级加密保护。我们不在服务器端保留您的内容副本（v1 阶段无自有后端）。</p>
+
+                <h2>七、儿童隐私</h2>
+                <p>本应用不面向 13 周岁以下儿童，且不会主动收集儿童个人信息。如您是未成年人，请在监护人陪同下使用本应用。如您发现儿童在未经授权情况下提供了个人信息，请通过下方邮箱联系我们立即删除。</p>
+
+                <h2>八、您的权利</h2>
+                <ul>
+                    <li><strong>访问与导出</strong>：本应用内所有由您产生的内容均可在应用内查看；漫画/预言结果可保存到相册或导出。</li>
+                    <li><strong>删除</strong>：您可在应用内逐条删除内容；卸载应用即清除全部本地数据。</li>
+                    <li><strong>取消订阅</strong>：通过 iOS"设置 → Apple ID → 订阅"管理。</li>
+                    <li><strong>申诉与查询</strong>：通过 liber@kuaizaiai.com 联系我们处理任何隐私相关请求。我们将在 15 个工作日内回复。</li>
+                </ul>
+
+                <h2>九、政策更新</h2>
+                <p>我们可能不定期更新本政策。重大变更会在应用内显著位置或通过推送通知告知您。继续使用即视为接受更新后的政策。</p>
+
+                <h2>十、联系方式</h2>
+                <p>开发者：快哉智能（澄迈）科技有限责任公司<br>
+                注册地址：海南省澄迈县老城镇南海大道 1237 号 3 栋 10 层 1009 房<br>
+                统一社会信用代码：91460000MAKBPPB24H<br>
+                邮箱：liber@kuaizaiai.com<br>
+                如对本政策有任何疑问、申诉或建议，请通过上述邮箱与我们联系。</p>
+
+                <a href="/index.html" class="back-link">← 返回首页</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-col footer-col-brand">
+                <p class="footer-brand-cn">快哉智能（澄迈）科技有限责任公司</p>
+                <p class="footer-brand-en">Kuaizai Intelligence (Chengmai) Technology Co., Ltd.</p>
+            </div>
+            <div class="footer-col">
+                <p>统一社会信用代码：91460000MAKBPPB24H</p>
+                <p>地址：海南省澄迈县老城镇南海大道1237号3栋10层1009房</p>
+                <p>邮箱：liber@kuaizaiai.com</p>
+            </div>
+            <div class="footer-col footer-col-links">
+                <a href="/privacy.html">公司隐私政策</a>
+                <a href="/terms.html">公司服务条款</a>
+                <a href="/liferewind/terms/">LifeRewind 服务条款</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>备案号：申请中 / ICP Filing in progress</p>
+            <p>© 2026 快哉智能（澄迈）科技有限责任公司 保留所有权利</p>
+        </div>
+    </footer>
+</body>
+</html>
