@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veil Privacy Policy — Liber Li</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/index.html" class="brand">
+                <span class="brand-mark"><img src="/assets/logo-mark.png" alt="" width="36" height="36"></span>
+                <span class="brand-name">
+                    <span class="brand-cn">快哉智能</span>
+                    <span class="brand-en">Kuaizai Intelligence</span>
+                </span>
+            </a>
+            <nav class="site-nav">
+                <a href="/veil/">Veil</a>
+                <a href="/veil/privacy/">Privacy</a>
+                <a href="/veil/support/">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="container">
+            <div class="legal-content">
+                <h1>Veil Privacy Policy</h1>
+                <p class="legal-meta">Effective: May 25, 2026 · Last updated: May 25, 2026</p>
+
+                <p>This Privacy Policy describes how Veil (the "App"), developed by Liber Li (an independent developer, the "Developer", "we", "us"), handles your information. Please read it in full before using the App.</p>
+
+                <h2>1. Summary</h2>
+                <p>Veil is a fully local macOS utility. It runs entirely on your Mac. It does not have user accounts, does not connect to any server we control, does not collect analytics, and does not include any third-party tracking SDK. The face-recognition feature processes camera frames on-device and stores only a mathematical feature print in local user defaults — your face image is never saved and never transmitted.</p>
+
+                <h2>2. Information We Process</h2>
+
+                <h3>2.1 Camera frames (face-unlock feature)</h3>
+                <p>When you enable Face Unlock and enroll your face, Veil uses your Mac's camera to capture frames and, using Apple's Vision framework, computes a <em>feature print</em> (a high-dimensional vector that uniquely characterizes facial geometry). The raw image frames are processed in-memory and discarded immediately; only the feature print is persisted, and it is stored in your local <code>UserDefaults</code> on your Mac. Veil never uploads camera frames or feature prints to any server.</p>
+
+                <h3>2.2 Settings and preferences</h3>
+                <p>Settings such as your chosen hotkey, break-reminder interval, custom reminder prompts, and Agent Mode timer values are stored in your local <code>UserDefaults</code>. These never leave your Mac.</p>
+
+                <h3>2.3 What we do not collect</h3>
+                <ul>
+                    <li>We do not collect your name, email, phone number, or any other personal identifier.</li>
+                    <li>We do not collect device identifiers (IDFA, hardware UUID, advertising ID, MAC address).</li>
+                    <li>We do not collect crash reports, usage analytics, or telemetry of any kind.</li>
+                    <li>We do not access your files, documents, photo library, contacts, calendar, location, microphone, or any other system data.</li>
+                    <li>We do not integrate any third-party analytics, advertising, or tracking SDK.</li>
+                    <li>We do not run any backend service. The App makes no network calls.</li>
+                </ul>
+
+                <h2>3. Permissions Veil Requests</h2>
+                <ul>
+                    <li><strong>Camera</strong> (<code>NSCameraUsageDescription</code>) — required only if you choose to use Face Unlock or Auto-Shield. You can deny it; the App will still function with manual lock/unlock.</li>
+                    <li><strong>Accessibility</strong> (optional) — used only for the global hotkey to trigger the shield. You can deny it; the menu-bar icon still works.</li>
+                    <li><strong>Notifications</strong> (optional) — used only for the Break Reminders feature. You can deny it; reminders simply won't appear.</li>
+                </ul>
+                <p>Veil is fully sandboxed (App Sandbox is enabled) and runs under Hardened Runtime, meaning the system restricts what the App can read or write outside its own container.</p>
+
+                <h2>4. Apple's Role</h2>
+                <p>If you obtain Veil through the Mac App Store, Apple processes your purchase. Apple's privacy practices are described in Apple's privacy policy. We do not receive your Apple ID, your name, your email address, or your payment information from Apple.</p>
+
+                <h2>5. Children's Privacy</h2>
+                <p>Veil is not designed for and is not directed at children under the age of 13. Veil does not collect any personal information from any user, including children.</p>
+
+                <h2>6. Security</h2>
+                <p>Because Veil does not transmit any data over the network, there is no transit risk. Local data (feature prints, settings) is protected by the macOS user-account sandbox and standard file-system permissions. The feature print is a mathematical descriptor and cannot be used to reconstruct your face image.</p>
+
+                <h2>7. Your Choices</h2>
+                <ul>
+                    <li><strong>Delete your face data</strong>: Open Veil → Menu Bar → "Remove Enrolled Face". This wipes the feature print from local storage immediately.</li>
+                    <li><strong>Stop using camera</strong>: Disable Face Unlock and Auto-Shield in Settings. The camera will not be accessed thereafter.</li>
+                    <li><strong>Uninstall Veil</strong>: Drag the App to the Trash. All local data Veil holds is removed with the App container.</li>
+                </ul>
+
+                <h2>8. Changes to This Policy</h2>
+                <p>If we make material changes to this policy, we will update the "Last updated" date above and, when material, notify users via an in-App notice on next launch.</p>
+
+                <h2>9. Contact</h2>
+                <p>Developer: Liber Li (李柏宏), independent developer<br>
+                Email: <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a></p>
+                <p>For any privacy-related question, deletion request, or complaint, please email us. We aim to respond within 15 business days.</p>
+
+                <hr style="margin: 48px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
+
+                <h1>Veil 隐私政策（中文）</h1>
+                <p class="legal-meta">生效日期：2026 年 5 月 25 日 · 最近更新：2026 年 5 月 25 日</p>
+
+                <p>本隐私政策说明 Veil（"本应用"）如何处理您的信息。本应用由独立开发者 Liber Li（李柏宏，以下简称"开发者"或"我们"）开发发布。请您在使用本应用前完整阅读本政策。</p>
+
+                <h2>一、概述</h2>
+                <p>Veil 是一款完全本地化的 macOS 工具应用。所有功能都在您的 Mac 上运行：无用户账号，不连接我们控制的任何服务器，不收集任何分析数据，不集成任何第三方追踪 SDK。人脸识别功能在本地处理摄像头画面，只存储一个数学特征向量（feature print）到本机 UserDefaults——您的人脸图像不会被保存，也不会被传输。</p>
+
+                <h2>二、我们处理的信息</h2>
+
+                <h3>2.1 摄像头画面（刷脸解锁功能）</h3>
+                <p>当您开启刷脸解锁并采集人脸时，Veil 使用 Mac 的摄像头采集画面，借助 Apple Vision 框架计算出一个 <em>feature print</em>（高维特征向量，用于唯一表征人脸几何）。原始图像在内存中处理后即丢弃，只有 feature print 被持久化，存储于您 Mac 本地的 <code>UserDefaults</code>。Veil 不会将摄像头画面或 feature print 上传到任何服务器。</p>
+
+                <h3>2.2 设置和偏好</h3>
+                <p>您的快捷键、休息提醒间隔、自定义提示语、Agent Mode 定时等设置存储在本机 <code>UserDefaults</code>，不会离开您的 Mac。</p>
+
+                <h3>2.3 我们不收集的信息</h3>
+                <ul>
+                    <li>不收集您的姓名、邮箱、手机号或任何个人身份信息。</li>
+                    <li>不收集设备标识符（IDFA、硬件 UUID、广告标识符、MAC 地址等）。</li>
+                    <li>不收集崩溃报告、使用分析、遥测数据。</li>
+                    <li>不访问您的文件、文档、照片、通讯录、日历、位置、麦克风或其他系统数据。</li>
+                    <li>不集成任何第三方分析、广告或追踪 SDK。</li>
+                    <li>不运行任何后端服务。本应用不发起任何网络请求。</li>
+                </ul>
+
+                <h2>三、本应用申请的权限</h2>
+                <ul>
+                    <li><strong>摄像头</strong>（<code>NSCameraUsageDescription</code>）——仅当您启用刷脸解锁或离座自动遮罩时需要。您可以拒绝；本应用仍可手动启用/退出遮罩。</li>
+                    <li><strong>辅助功能</strong>（可选）——仅用于全局快捷键触发遮罩。您可以拒绝；菜单栏图标仍可使用。</li>
+                    <li><strong>通知</strong>（可选）——仅用于休息提醒功能。您可以拒绝；提醒将不再显示。</li>
+                </ul>
+                <p>本应用启用了完整的 App Sandbox 沙盒，并以 Hardened Runtime 运行，系统将限制本应用读取或写入自身容器之外的内容。</p>
+
+                <h2>四、Apple 的角色</h2>
+                <p>如果您通过 Mac App Store 获取 Veil，Apple 将处理您的购买。Apple 的隐私实践见 Apple 的隐私政策。我们不会从 Apple 处获得您的 Apple ID、姓名、邮箱或支付信息。</p>
+
+                <h2>五、儿童隐私</h2>
+                <p>本应用不面向 13 周岁以下儿童，且不收集任何用户（包括儿童）的个人信息。</p>
+
+                <h2>六、数据安全</h2>
+                <p>由于本应用不进行任何网络传输，不存在传输风险。本地数据（feature print、设置）受 macOS 用户账户沙盒和标准文件系统权限保护。feature print 是数学描述符，无法用于重建您的人脸图像。</p>
+
+                <h2>七、您的选择</h2>
+                <ul>
+                    <li><strong>删除人脸数据</strong>：打开 Veil → 菜单栏 → "移除已采集人脸"。立即清除本机 feature print。</li>
+                    <li><strong>停止使用摄像头</strong>：在设置中关闭刷脸解锁与离座自动遮罩，此后将不再访问摄像头。</li>
+                    <li><strong>卸载 Veil</strong>：将本应用拖入废纸篓。本应用持有的本地数据将随应用容器一并清除。</li>
+                </ul>
+
+                <h2>八、政策更新</h2>
+                <p>如本政策发生重大变更，我们将更新上方"最近更新"日期，并在重大变更时通过应用内提示告知。</p>
+
+                <h2>九、联系方式</h2>
+                <p>开发者：Liber Li（李柏宏），独立开发者<br>
+                邮箱：<a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a></p>
+                <p>如您有任何隐私相关疑问、删除请求或申诉，请通过上述邮箱与我们联系，我们将在 15 个工作日内回复。</p>
+
+                <a href="/veil/" class="back-link">← Back to Veil</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-col footer-col-brand">
+                <p class="footer-brand-cn">Veil · Privacy shield for the AI-era Mac</p>
+                <p class="footer-brand-en">Developed by Liber Li · Independent developer</p>
+            </div>
+            <div class="footer-col">
+                <p>Email: liber@kuaizaiai.com</p>
+                <p>macOS 13+ · Universal binary</p>
+            </div>
+            <div class="footer-col footer-col-links">
+                <a href="/veil/privacy/">Privacy Policy</a>
+                <a href="/veil/support/">Support</a>
+                <a href="/index.html">Back to Kuaizai</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2026 Liber Li. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

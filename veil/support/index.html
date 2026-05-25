@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veil Support — Liber Li</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/index.html" class="brand">
+                <span class="brand-mark"><img src="/assets/logo-mark.png" alt="" width="36" height="36"></span>
+                <span class="brand-name">
+                    <span class="brand-cn">快哉智能</span>
+                    <span class="brand-en">Kuaizai Intelligence</span>
+                </span>
+            </a>
+            <nav class="site-nav">
+                <a href="/veil/">Veil</a>
+                <a href="/veil/privacy/">Privacy</a>
+                <a href="/veil/support/">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="container">
+            <div class="legal-content">
+                <h1>Veil Support</h1>
+                <p class="legal-meta">Last updated: May 25, 2026</p>
+
+                <h2>Contact</h2>
+                <p>For all support requests, bug reports, feature ideas, and refund questions, please email <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>. I read every message and reply within 1–3 business days.</p>
+
+                <h2>Frequently Asked Questions</h2>
+
+                <h3>What does Veil do?</h3>
+                <p>Veil hides your Mac's screen on demand while keeping the machine awake, and unlocks automatically when it sees your face. It's designed for desks running long AI agent tasks where you want privacy without putting the Mac to sleep.</p>
+
+                <h3>Does Veil send my face image anywhere?</h3>
+                <p>No. Face recognition runs entirely on your Mac using Apple's Vision framework. Only a mathematical feature print is stored locally in your user defaults — never the original image, and never transmitted. See the <a href="/veil/privacy/">Privacy Policy</a> for details.</p>
+
+                <h3>What macOS versions are supported?</h3>
+                <p>macOS 13 (Ventura) and later. Veil is a Universal binary, so it runs natively on Apple silicon and Intel Macs.</p>
+
+                <h3>Why does Veil need camera access?</h3>
+                <p>Only for Face Unlock and Auto-Shield. If you don't use those features, you can deny camera permission and the app still works (manual shield via menu bar or hotkey).</p>
+
+                <h3>The face unlock isn't working — what should I check?</h3>
+                <ol>
+                    <li>Make sure good lighting hits your face.</li>
+                    <li>Open Menu Bar → Veil → "Re-enroll Face" and capture 5 samples while looking directly at the camera.</li>
+                    <li>If a peripheral camera (Continuity Camera, USB) is plugged in, try unplugging it so the built-in FaceTime HD camera is used.</li>
+                    <li>Confirm Camera permission is granted in System Settings → Privacy & Security → Camera.</li>
+                </ol>
+
+                <h3>How do I make my Mac keep running even when I close the lid?</h3>
+                <p>macOS has a system-level command that prevents sleep when the lid is closed (clamshell mode). Veil shows you the exact command but does not run it for you. Open Veil → Settings → "Lid-close persistence" for the snippet. You'll paste it into Terminal and provide your admin password — Veil never sudo's on your behalf.</p>
+
+                <h3>How do I uninstall Veil?</h3>
+                <p>Drag <code>Veil.app</code> from your Applications folder into the Trash. All data Veil holds is in its sandbox container and is removed with the app.</p>
+
+                <h3>Can I get a refund?</h3>
+                <p>Refunds are processed by Apple. Visit <a href="https://reportaproblem.apple.com/" target="_blank" rel="noopener">reportaproblem.apple.com</a> and select your Veil purchase. If you'd like me to help, email me and I'll do whatever I can.</p>
+
+                <h2>Reporting a bug</h2>
+                <p>Please email <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a> with:</p>
+                <ul>
+                    <li>macOS version and Mac model (Apple menu → About This Mac).</li>
+                    <li>Veil version (menu bar icon → About Veil).</li>
+                    <li>Steps that lead to the issue, and what you expected to happen.</li>
+                    <li>If relevant, a screenshot or short screen recording.</li>
+                </ul>
+
+                <hr style="margin: 48px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
+
+                <h1>Veil 技术支持（中文）</h1>
+                <p class="legal-meta">最近更新：2026 年 5 月 25 日</p>
+
+                <h2>联系方式</h2>
+                <p>使用问题、bug 反馈、功能建议、退款相关请发邮件至 <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>。每封都会回复，工作日 1–3 天内。</p>
+
+                <h2>常见问题</h2>
+
+                <h3>Veil 做什么？</h3>
+                <p>一键遮挡 Mac 屏幕，同时保持电脑不睡眠；看到您的脸自动撤下遮罩。为长时间跑 AI 代理任务的工位场景设计——既要私密，又不能让电脑睡死。</p>
+
+                <h3>Veil 会上传我的人脸图像吗？</h3>
+                <p>不会。人脸识别完全在您的 Mac 本地通过 Apple Vision 框架完成。只有数学 feature print 存储在本机 UserDefaults——原始图像从不保存，也从不传输。详见<a href="/veil/privacy/">隐私政策</a>。</p>
+
+                <h3>支持哪些 macOS 版本？</h3>
+                <p>macOS 13（Ventura）及以上。Universal 二进制，Apple Silicon 和 Intel Mac 都能原生运行。</p>
+
+                <h3>为什么 Veil 需要摄像头权限？</h3>
+                <p>仅用于刷脸解锁和离座自动遮罩。如果不用这两个功能，可以拒绝摄像头权限，应用仍可使用（菜单栏或快捷键手动启用遮罩）。</p>
+
+                <h3>刷脸解锁不工作怎么办？</h3>
+                <ol>
+                    <li>确认光线足够照亮您的脸。</li>
+                    <li>菜单栏 → Veil → "重新采集人脸"，正脸看着摄像头，采集 5 张样本。</li>
+                    <li>如果连接了外接摄像头（Continuity Camera / USB），请尝试断开，让系统使用内置 FaceTime HD 摄像头。</li>
+                    <li>确认系统设置 → 隐私与安全性 → 摄像头 里已勾选 Veil。</li>
+                </ol>
+
+                <h3>如何让 Mac 合上盖子还在跑？</h3>
+                <p>macOS 有系统级命令可以阻止合盖时的睡眠（clamshell 模式）。Veil 给出确切命令，但不替您执行。打开 Veil → 设置 → "合盖不睡眠"查看命令。您需要在 Terminal 里执行并输入管理员密码——Veil 绝不替您 sudo。</p>
+
+                <h3>如何卸载 Veil？</h3>
+                <p>从应用程序文件夹把 <code>Veil.app</code> 拖入废纸篓即可。所有本地数据都在沙盒容器内，会随应用一并清除。</p>
+
+                <h3>能否退款？</h3>
+                <p>退款由 Apple 处理。访问 <a href="https://reportaproblem.apple.com/" target="_blank" rel="noopener">reportaproblem.apple.com</a> 并选择 Veil 购买记录。如需协助请发邮件，我会尽力配合。</p>
+
+                <h2>报告 bug</h2>
+                <p>请发邮件至 <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>，附上：</p>
+                <ul>
+                    <li>macOS 版本和 Mac 型号（左上角苹果菜单 → 关于本机）。</li>
+                    <li>Veil 版本（菜单栏图标 → 关于 Veil）。</li>
+                    <li>触发问题的操作步骤、期望的行为。</li>
+                    <li>有的话，附一张截图或短录屏。</li>
+                </ul>
+
+                <a href="/veil/" class="back-link">← Back to Veil</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-col footer-col-brand">
+                <p class="footer-brand-cn">Veil · Privacy shield for the AI-era Mac</p>
+                <p class="footer-brand-en">Developed by Liber Li · Independent developer</p>
+            </div>
+            <div class="footer-col">
+                <p>Email: liber@kuaizaiai.com</p>
+                <p>macOS 13+ · Universal binary</p>
+            </div>
+            <div class="footer-col footer-col-links">
+                <a href="/veil/privacy/">Privacy Policy</a>
+                <a href="/veil/support/">Support</a>
+                <a href="/index.html">Back to Kuaizai</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2026 Liber Li. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
