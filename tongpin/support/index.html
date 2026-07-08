@@ -1,161 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>同频 Verve Support — Kuaizai Intelligence</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>同频 Verve Support</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f2428;
+      --muted: #626a72;
+      --line: #d8d2ca;
+      --paper: #f7f4ef;
+      --panel: #fffdf9;
+      --accent: #2d5f73;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      width: min(880px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    header {
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    p,
+    li,
+    dt,
+    dd {
+      font-size: 16px;
+    }
+
+    .summary {
+      margin: 18px 0 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .panel {
+      margin: 28px 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: minmax(140px, 0.34fr) 1fr;
+      gap: 12px 18px;
+      margin: 16px 0 0;
+    }
+
+    dt {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    dd {
+      margin: 0;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 22px;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #ece7df;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    footer {
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(100% - 28px, 880px);
+        padding: 40px 0;
+      }
+
+      dl {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="container header-inner">
-            <a href="/index.html" class="brand">
-                <span class="brand-mark"><img src="/assets/logo-mark.png" alt="" width="36" height="36"></span>
-                <span class="brand-name">
-                    <span class="brand-cn">快哉智能</span>
-                    <span class="brand-en">Kuaizai Intelligence</span>
-                </span>
-            </a>
-            <nav class="site-nav">
-                <a href="/tongpin/privacy/">Privacy</a>
-                <a href="/tongpin/support/">Support</a>
-                <a href="/index.html#contact">Contact</a>
-            </nav>
-        </div>
+  <main>
+    <header>
+      <p class="eyebrow">同频 Verve</p>
+      <h1>Support</h1>
+      <p class="summary">
+        Help and release information for the backend account and Verve membership
+        version of 同频 Verve.
+      </p>
     </header>
 
-    <main class="legal-page">
-        <div class="container">
-            <div class="legal-content">
-                <h1>同频 Verve Support</h1>
-                <p class="legal-meta">Last updated: July 7, 2026</p>
+    <section class="panel" aria-labelledby="contact">
+      <h2 id="contact">Contact</h2>
+      <p>
+        Support email: liber@kuaizaiai.com
+      </p>
+      <p>
+        Please include your device model, iOS version, app version, and a short
+        description of what happened.
+      </p>
+    </section>
 
-                <h2>Contact</h2>
-                <p>For support requests, bug reports, feature ideas, and privacy questions, please email <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>. We aim to reply within 1 to 3 business days for product support and within 15 business days for privacy-related requests.</p>
+    <section aria-labelledby="app-info">
+      <h2 id="app-info">App Information</h2>
+      <dl>
+        <dt>App name</dt>
+        <dd>同频 Verve</dd>
+        <dt>Version</dt>
+        <dd>1.0</dd>
+        <dt>Build</dt>
+        <dd>3</dd>
+        <dt>Bundle ID</dt>
+        <dd><code>com.liberhome.tongpin</code></dd>
+        <dt>Current mode</dt>
+        <dd>Backend account with Verve monthly/yearly membership.</dd>
+      </dl>
+    </section>
 
-                <h2>App Information</h2>
-                <ul>
-                    <li>App name: 同频 Verve</li>
-                    <li>Current version: 1.0</li>
-                    <li>Current build: 3</li>
-                    <li>Bundle ID: <code>com.liberhome.tongpin</code></li>
-                    <li>Current mode: local-only manual daily status.</li>
-                </ul>
+    <section aria-labelledby="current-boundary">
+      <h2 id="current-boundary">What This Version Does</h2>
+      <ul>
+        <li>Lets you manually choose today's status on this device.</li>
+        <li>Uses Sign in with Apple for account access.</li>
+        <li>Supports account deletion, adult policy confirmation, and safety actions.</li>
+        <li>Uses StoreKit for Verve monthly and yearly subscriptions.</li>
+        <li>Stores app-local preferences in iOS app-local <code>UserDefaults</code>.</li>
+      </ul>
+    </section>
 
-                <h2>What This Version Does</h2>
-                <ul>
-                    <li>Lets you manually choose today's status on this device.</li>
-                    <li>Stores that manual status locally in iOS app-local <code>UserDefaults</code>.</li>
-                    <li>Expires the local manual status after the current day.</li>
-                </ul>
+    <section aria-labelledby="not-included">
+      <h2 id="not-included">What This Version Does Not Do</h2>
+      <ul>
+        <li>No analytics, ads, tracking, or third-party profiling.</li>
+        <li>No HealthKit or Apple Health reading.</li>
+        <li>No Bluetooth scanning, pairing, or wearable-device connection.</li>
+        <li>No location, contacts, camera, microphone, or photo-library access.</li>
+      </ul>
+    </section>
 
-                <h2>What This Version Does Not Do</h2>
-                <ul>
-                    <li>No sign-in, account creation, or account deletion flow.</li>
-                    <li>No internet connection, backend sync, analytics, ads, or tracking.</li>
-                    <li>No HealthKit or Apple Health reading.</li>
-                    <li>No Bluetooth scanning, pairing, or wearable-device connection.</li>
-                    <li>No location, contacts, camera, microphone, or photo-library access.</li>
-                </ul>
+    <section aria-labelledby="known-limits">
+      <h2 id="known-limits">Known Limits</h2>
+      <p>
+        Apple Watch, Apple Health, Xiaomi bands, other wearables, smart rings,
+        nearby discovery, and invitations should only be enabled after the real
+        implementation, safety flows, and matching App Store privacy answers are ready.
+      </p>
+    </section>
 
-                <h2>Known Limits</h2>
-                <p>Apple Watch, Apple Health, Xiaomi bands, other wearables, smart rings, accounts, nearby discovery, and invitations are not active in this local-only binary. They should only be enabled after the real implementation, safety flows, and matching App Store privacy answers are ready.</p>
-
-                <h2>Troubleshooting</h2>
-                <ul>
-                    <li>If today's status looks wrong, manually choose the status that best matches your day.</li>
-                    <li>If a status does not persist, make sure the App was not deleted or reinstalled.</li>
-                    <li>Today's manual status is designed to expire after the current day.</li>
-                </ul>
-
-                <h2>Reporting A Bug</h2>
-                <p>Please email <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a> with:</p>
-                <ul>
-                    <li>Your iPhone model and iOS version.</li>
-                    <li>Tongpin version and build number.</li>
-                    <li>Steps that led to the issue and what you expected to happen.</li>
-                    <li>A screenshot or screen recording if it helps explain the issue.</li>
-                </ul>
-
-                <hr style="margin: 48px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-
-                <h1>同频 Verve 技术支持（中文）</h1>
-                <p class="legal-meta">最近更新：2026 年 7 月 7 日</p>
-
-                <h2>联系方式</h2>
-                <p>使用问题、bug 反馈、功能建议和隐私问题，请发邮件至 <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>。产品支持通常会在 1 到 3 个工作日内回复，隐私相关请求会在 15 个工作日内回复。</p>
-
-                <h2>应用信息</h2>
-                <ul>
-                    <li>应用名称：同频 Verve</li>
-                    <li>当前版本：1.0</li>
-                    <li>当前构建号：3</li>
-                    <li>Bundle ID：<code>com.liberhome.tongpin</code></li>
-                    <li>当前模式：本机手动每日状态。</li>
-                </ul>
-
-                <h2>当前版本包含</h2>
-                <ul>
-                    <li>允许您在本设备上手动选择今日状态。</li>
-                    <li>将该手动状态保存在 iOS 应用本地 <code>UserDefaults</code> 中。</li>
-                    <li>当天结束后自动让手动状态失效。</li>
-                </ul>
-
-                <h2>当前版本不包含</h2>
-                <ul>
-                    <li>没有登录、账号创建或账号删除流程。</li>
-                    <li>没有网络连接、后端同步、分析、广告或追踪。</li>
-                    <li>不会读取 HealthKit 或 Apple 健康。</li>
-                    <li>不会扫描、配对或连接蓝牙可穿戴设备。</li>
-                    <li>不会访问位置、通讯录、摄像头、麦克风或照片库。</li>
-                </ul>
-
-                <h2>已知限制</h2>
-                <p>Apple Watch、Apple 健康、小米手环、其他可穿戴设备、智能戒指、账号、附近发现和邀约功能，在当前本机版本中尚未启用。它们需要在真实实现、安全流程和 App Store 隐私答案准备完成后再开放。</p>
-
-                <h2>常见排查</h2>
-                <ul>
-                    <li>如果今日状态不符合实际，请直接手动选择最符合今天的状态。</li>
-                    <li>如果状态没有保留，请确认应用没有被删除或重新安装。</li>
-                    <li>今日手动状态会在当天结束后自动失效，这是当前版本的设计。</li>
-                </ul>
-
-                <h2>报告 bug</h2>
-                <p>请发邮件至 <a href="mailto:liber@kuaizaiai.com">liber@kuaizaiai.com</a>，附上：</p>
-                <ul>
-                    <li>您的 iPhone 型号和 iOS 版本。</li>
-                    <li>同频版本号和构建号。</li>
-                    <li>触发问题的操作步骤，以及您原本期望发生什么。</li>
-                    <li>有帮助的话，请附截图或录屏。</li>
-                </ul>
-
-                <a href="/tongpin/privacy/" class="back-link">← 同频 Verve Privacy Policy</a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <div class="footer-col footer-col-brand">
-                <p class="footer-brand-cn">同频 · 今天我适合怎样被靠近</p>
-                <p class="footer-brand-en">Developed by Kuaizai Intelligence</p>
-            </div>
-            <div class="footer-col">
-                <p>Email: liber@kuaizaiai.com</p>
-                <p>iOS · Local-only daily status</p>
-            </div>
-            <div class="footer-col footer-col-links">
-                <a href="/tongpin/privacy/">Privacy Policy</a>
-                <a href="/tongpin/support/">Support</a>
-                <a href="/index.html">Back to Kuaizai</a>
-            </div>
-        </div>
-        <div class="container footer-bottom">
-            <p>© 2026 Kuaizai Intelligence (Chengmai) Technology Co., Ltd. All rights reserved.</p>
-        </div>
+    <footer>
+      Last updated: 2026-07-08.
     </footer>
+  </main>
 </body>
 </html>
