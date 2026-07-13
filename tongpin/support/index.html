@@ -138,7 +138,7 @@
       <p class="eyebrow">同频 Verve</p>
       <h1>Support</h1>
       <p class="summary">
-        Help and release information for the backend account and Verve membership
+        Help and release information for the backend account paid-download
         version of 同频 Verve.
       </p>
     </header>
@@ -162,11 +162,11 @@
         <dt>Version</dt>
         <dd>1.0</dd>
         <dt>Build</dt>
-        <dd>3</dd>
+        <dd>12</dd>
         <dt>Bundle ID</dt>
         <dd><code>com.liberhome.tongpin</code></dd>
         <dt>Current mode</dt>
-        <dd>Backend account with Verve monthly/yearly membership.</dd>
+        <dd>Backend account paid download with No in-app purchases and No subscriptions.</dd>
       </dl>
     </section>
 
@@ -176,8 +176,10 @@
         <li>Lets you manually choose today's status on this device.</li>
         <li>Uses Sign in with Apple for account access.</li>
         <li>Supports account deletion, adult policy confirmation, and safety actions.</li>
-        <li>Uses StoreKit for Verve monthly and yearly subscriptions.</li>
-        <li>Stores app-local preferences in iOS app-local <code>UserDefaults</code>.</li>
+        <li>No in-app purchases and No subscriptions are active in build 1.0.</li>
+        <li>Stores app-local preferences and optional private signal summaries in iOS app-local <code>UserDefaults</code>.</li>
+        <li>Can read Apple Health summaries only after you grant HealthKit permission.</li>
+        <li>Can scan and connect only YC SDK-verified smart rings that you choose.</li>
       </ul>
     </section>
 
@@ -185,8 +187,8 @@
       <h2 id="not-included">What This Version Does Not Do</h2>
       <ul>
         <li>No analytics, ads, tracking, or third-party profiling.</li>
-        <li>No HealthKit or Apple Health reading.</li>
-        <li>No Bluetooth scanning, pairing, or wearable-device connection.</li>
+        <li>No Xiaomi or other third-party-band connection in this version.</li>
+        <li>No raw HealthKit samples, Bluetooth advertisements, or device telemetry are visible to other users.</li>
         <li>No location, contacts, camera, microphone, or photo-library access.</li>
       </ul>
     </section>
@@ -194,14 +196,15 @@
     <section aria-labelledby="known-limits">
       <h2 id="known-limits">Known Limits</h2>
       <p>
-        Apple Watch, Apple Health, Xiaomi bands, other wearables, smart rings,
-        nearby discovery, and invitations should only be enabled after the real
-        implementation, safety flows, and matching App Store privacy answers are ready.
+        Apple Health and YC rings are optional private sources. Nearby discovery
+        requires sign-in, adult confirmation, and an explicit same-city opt-in;
+        invitations are delivered only to the in-app inbox and can be accepted,
+        declined, muted, blocked, reported, or cancelled.
       </p>
     </section>
 
     <footer>
-      Last updated: 2026-07-08.
+      Last updated: 2026-07-14.
     </footer>
   </main>
 </body>

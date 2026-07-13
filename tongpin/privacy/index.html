@@ -116,9 +116,10 @@
       <p class="eyebrow">同频 Verve</p>
       <h1>Privacy Policy</h1>
       <p class="summary">
-        This policy describes the backend account and Verve membership version of
-        同频 Verve. The app uses Sign in with Apple, stores daily status and safety
-        records with our backend, and uses StoreKit for Verve subscriptions.
+        This policy describes the backend account paid-download version of 同频
+        Verve. The app uses Sign in with Apple for account functions and offers
+        optional on-device Apple Health and YC smart-ring signals. Build 1.0 has
+        No in-app purchases and No subscriptions.
       </p>
     </header>
 
@@ -126,16 +127,16 @@
       <h2 id="current-version">Current Version Boundary</h2>
       <p>
         The current version lets you manually choose today's status, sign in with
-        Apple, manage account safety actions, delete your account, and use Verve
-        membership features.
+        Apple, manage account safety actions, and delete your account.
       </p>
       <ul>
         <li>Sign in with Apple is used for account creation and session exchange.</li>
-        <li>Backend services store account, status, safety, deletion, and membership entitlement records.</li>
-        <li>StoreKit is used for Verve monthly and yearly subscriptions.</li>
+        <li>Backend services store account, status, safety, and deletion records.</li>
+        <li>Apple may provide a relay email during Sign in with Apple; we store it only for account functionality.</li>
+        <li>No in-app purchases and No subscriptions are active in build 1.0.</li>
         <li>No analytics, ads, tracking, or third-party SDK data collection.</li>
-        <li>No HealthKit or Apple Health reading.</li>
-        <li>No Bluetooth scanning, pairing, or wearable-device connection.</li>
+        <li>Optional Apple Health read access is used only after you grant permission.</li>
+        <li>Optional Bluetooth scanning and connection are limited to YC SDK-verified smart rings that you choose.</li>
         <li>No location access, contact access, camera access, microphone access, or photo-library access.</li>
       </ul>
     </section>
@@ -147,9 +148,10 @@
         processes backend data needed for account functionality.
       </p>
       <ul>
+        <li>Contact info, limited to the Apple relay email from Sign in with Apple when Apple provides it.</li>
         <li>Identifiers, such as internal user ID, Sign in with Apple subject hash, and session token hash.</li>
-        <li>User content and safety records, such as manual daily status, profile/status fields, adult policy confirmation, block, report, mute, and remove-from-nearby actions.</li>
-        <li>Purchases, such as product ID, original transaction ID, subscription state, refund, revocation, billing retry, and grace-period state.</li>
+        <li>User content and safety records, such as manual daily status, profile/status fields, invitation messages and state, adult policy confirmation, block, report, mute, and remove-from-nearby actions.</li>
+        <li>On this device, a current Apple Health summary (sleep, resting heart rate, HRV, and steps), an optional YC ring name/MAC address/current heart rate, and manual private metrics. These values are used for your private status reference, retained locally, and never shown to other users.</li>
         <li>Diagnostics only if needed to operate the service, prevent fraud, or investigate safety issues.</li>
       </ul>
       <p>
@@ -161,20 +163,23 @@
     <section aria-labelledby="health-wearables">
       <h2 id="health-wearables">Health And Wearable Signals</h2>
       <p>
-        Some screens may mention Apple Watch, Apple Health, Xiaomi bands, other
-        wearables, or smart rings as future optional signal sources. In this version
-        these are not active integrations. The app does not request HealthKit
-        permission, does not read heart rate or sleep data, and does not scan for
-        Bluetooth devices.
+        Apple Health is optional. When you grant access, the app may read sleep,
+        resting heart rate, HRV, and step summaries to help you review today's
+        private status. YC smart rings are also optional: the app scans only for
+        devices verified by the YC SDK and can read the connected ring's current
+        heart rate and basic device state. The app does not upload raw HealthKit
+        samples, Bluetooth advertisements, or ring telemetry to the social
+        surface, and it never uses these signals to rank people or decide consent.
+        Xiaomi and other third-party bands are not currently connected.
       </p>
     </section>
 
-    <section aria-labelledby="membership">
-      <h2 id="membership">Verve Membership</h2>
+    <section aria-labelledby="purchases">
+      <h2 id="purchases">Purchases</h2>
       <p>
-        Verve membership is handled through Apple's in-app purchase system. We use
-        purchase and entitlement records only to unlock membership features, prevent
-        fraud, handle refunds or revocations, and provide support.
+        Build 1.0 is sold as a paid download through the App Store. It does not
+        sell in-app purchases or subscriptions, and the app does not collect
+        purchase history or subscription state.
       </p>
     </section>
 
@@ -183,16 +188,16 @@
       <p>
         You can initiate account deletion in the app. We delete or anonymize account,
         profile, status, and session data where possible. We may retain limited
-        safety, fraud-prevention, legal, or purchase records when required to operate
-        subscriptions, process refunds, prevent abuse, or comply with law.
+        safety, fraud-prevention, or legal records when required to prevent abuse
+        or comply with law.
       </p>
     </section>
 
     <section aria-labelledby="future-changes">
       <h2 id="future-changes">Future Changes</h2>
       <p>
-        If a future version adds HealthKit, Bluetooth devices, location, analytics,
-        ads, tracking, or additional data collection, this policy must be updated
+        If a future version adds new wearable vendors, location, analytics, ads,
+        tracking, raw health-data server sync, or additional data collection, this policy must be updated
         before that version is submitted. The App Store privacy answers must match
         the submitted binary exactly.
       </p>
@@ -206,7 +211,7 @@
     </section>
 
     <footer>
-      Last updated: 2026-07-08. Bundle ID: <code>com.liberhome.tongpin</code>.
+      Last updated: 2026-07-14. Bundle ID: <code>com.liberhome.tongpin</code>.
     </footer>
   </main>
 </body>
